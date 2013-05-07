@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <title>Fabric Client</title>
+
+    <script>
+        var USE_COMPILED = false;
+        var require = {
+            baseUrl: './js'
+        }
+    </script>
+
+</head>
+<body>
+
+    <p>Client!</p>
+
+    <script type="text/javascript">
+        //Async load RequireJS
+        (function(){
+            var sel = document.createElement('script');
+            sel.type = 'text/javascript';
+            sel.async = true;
+            if(USE_COMPILED === false){
+                sel.setAttribute('data-main', './js/app/main');
+                sel.src = './js/libs/require.js';
+            }
+            else {
+                sel.src = './js/compiled/compiled.js';
+            }
+
+            var firstTag = document.getElementsByTagName('script')[0];
+            firstTag.parentNode.insertBefore(sel,firstTag);
+        })();
+    </script>
+</body>
+</html>

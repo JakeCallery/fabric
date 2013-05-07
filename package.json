@@ -1,0 +1,7 @@
+{
+	"name":"Fabric",
+	"dependencies": {
+		"requirejs" :"*",
+		"websocket" : "1.0.7"
+	}
+}
