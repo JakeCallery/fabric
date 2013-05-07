@@ -20,8 +20,7 @@ function GameServer($id){
 
 	var self = this;
 
-	//TODO: Switch to in-game protocol
-	var protocol = 'echo-protocol';
+	var protocol = 'ingame-protocol';
 	this.id = $id;
 
 	var port = null;
