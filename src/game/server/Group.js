@@ -10,39 +10,44 @@ var Events = require('events');
 module.exports = Group;
 
 function Group($id) {
-
 	//super
 	Events.EventEmitter.call(this);
+
+	var self = this;
 
 	this.id = $id;
 	this.clients = [];
 
 	this.addClient = function($client){
-		var self = this;
-		this.clients.push($client);
-		$client.groupId = this.id;
+		self.clients.push($client);
+		$client.group = self;
 
 		//Wait for close, and clean up client if needed
-		$client.connection.on('close', function(reasonCode, description){
-			console.log('Group caught client close: ' + self.clients.length);
-			var idx = self.clients.indexOf($client);
-			if(idx !== -1){
-				self.clients.splice(idx, 1);
-				console.log('Num Clients: ' + self.clients.length);
-			} else {
-				console.log('Client not found in group :(');
-			}
-
-			if(self.clients.length <= 0){
-				self.emit('emptyGroup');
-			}
-		});
-
+		$client.addListener('close', handleClientClose);
 	};
 
 	this.removeClient = function($client){
 		var index = this.clients.indexOf($client);
-		this.clients.splice(index,1);
+		self.clients.splice(index,1);
+		$client.removeListener('close', handleClientClose);
+	};
+
+	var handleClientClose = function($client, $reasonCode, $description){
+		console.log('Group caught client close: ' + self.clients.length);
+		var idx = self.clients.indexOf($client);
+		if(idx !== -1){
+			self.clients.splice(idx, 1);
+			console.log('Num Clients: ' + self.clients.length);
+		} else {
+			console.log('Client not found in group :(');
+		}
+
+		$client.removeListener('close', handleClientClose);
+		$client.destroy();
+
+		if(self.clients.length <= 0){
+			self.emit('emptyGroup',self);
+		}
 	};
 }
 

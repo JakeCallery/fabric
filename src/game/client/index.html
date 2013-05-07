@@ -23,11 +23,11 @@
             sel.type = 'text/javascript';
             sel.async = true;
             if(USE_COMPILED === false){
-                sel.setAttribute('data-main', './js/app/main');
-                sel.src = './js/libs/require.js';
+                sel.setAttribute('data-main', 'app/main');
+                sel.src = 'js/libs/require.js';
             }
             else {
-                sel.src = './js/compiled/compiled.js';
+                sel.src = 'compiled/compiled.js';
             }
 
             var firstTag = document.getElementsByTagName('script')[0];
