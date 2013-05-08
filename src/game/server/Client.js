@@ -17,6 +17,7 @@ function Client($connection, $globalConnectionIndex) {
 
 	var self = this;
 
+	//TODO: Do a check for collisions within group on group add, recalc if needed
 	this.id = UUID.v4();
 	this.connection = $connection;
 	this.group = null;

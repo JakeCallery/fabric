@@ -131,7 +131,7 @@ function GameServer($id){
 		connections.splice($client.connectionIndex, 1);
 		$client.removeListener('close', handleConnClose);
 		var group = $client.group;
-		group.sendToGroupFromClient(new Message($client.id, Message.DISCONNECT, {clientId:$client.id}), $client)
+		group.sendToGroupFromClient(new Message($client.id, Message.REMOTE_DISCONNECT, {clientId:$client.id}), $client)
 	};
 
 	var handleEmptyGroup = function($group){

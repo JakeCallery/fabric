@@ -7,15 +7,14 @@ define([],
 function(){
     return (function(){
         /**
-         * Creates a RemoteClient object
+         * Creates a GameState object
          * @constructor
          */
-        function RemoteClient($id){
-	        this.id = $id;
+        function GameState(){
         }
         
         
         //Return constructor
-        return RemoteClient;
+        return GameState;
     })();
 });

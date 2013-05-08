@@ -9,8 +9,9 @@ define([
 'jac/utils/ObjUtils',
 'jac/events/GlobalEventBus',
 'jac/events/JacEvent',
-'app/net/RemoteClient'],
-function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
+'app/net/Client',
+'app/net/events/NetEvent'],
+function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
     return (function(){
         /**
          * Creates a NetManager object
@@ -40,6 +41,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
 
 	        var handleSocketClose = function($e){
 		        L.log('Socket Closed');
+		        geb.dispatchEvent(new NetEvent(NetEvent.DISCONNECTED));
 	        };
 
 	        var initialConnect = function($data){
@@ -72,6 +74,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
 			        case 'connect':
 				        initialConnect(data);
 				        L.log('ID: ' + self.clientId);
+				        geb.dispatchEvent(new NetEvent(NetEvent.CONNECTED));
 				        break;
 
 			        case 'newclient':
@@ -80,7 +83,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
 				        L.log('Num Remotes: ' + self.remoteClients.length);
 				        break;
 
-			        case 'disconnect':
+			        case 'remotedisconnect':
 				        L.log('Caught Dropped Client: ' + data.clientId);
 				        self.removeRemoteClient(data.clientId);
 				        L.log('Num Remotes: ' + self.remoteClients.length);
@@ -94,7 +97,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
 	        };
 
 	        this.addRemoteClient = function($clientId){
-		        self.remoteClients.push(new RemoteClient($clientId));
+		        self.remoteClients.push(new Client($clientId));
 	        };
 
 	        this.removeRemoteClient = function($clientId){
