@@ -12,13 +12,13 @@ function(){
          * @param {boolean} $isRemote false if local client, true if remote client
          * @constructor
          */
-        function RemoteClient($id, $isRemote){
+        function Client($id, $isRemote){
 	        this.id = $id;
 	        this.isRemote = $isRemote
         }
         
         
         //Return constructor
-        return RemoteClient;
+        return Client;
     })();
 });

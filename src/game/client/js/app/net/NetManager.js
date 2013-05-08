@@ -28,8 +28,8 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
 	        var connectURL = 'ws://jachtml.com:5252';
 			var socket = null;
 
-	        this.clientId = null;
 	        this.remoteClients = [];
+	        /** @type {Client} */this.localClient = null;
 
 	        var handleSocketOpen = function($e){
 		        L.log('Connected...');
@@ -47,12 +47,12 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
 	        var initialConnect = function($data){
 		        L.log('Caught Initial Connect');
 
-		        self.clientId = $data.clientId;
+		        self.addLocalClient($data.clientId);
 
-		        //add remotes
-		        for(var i = 0; i < $data.remotes.length; i++){
-			        if($data.remotes[i].id !== self.clientId){
-				        self.addRemoteClient($data.remotes[i].id);
+		        //add clients
+		        for(var i = 0; i < $data.clients.length; i++){
+			        if($data.clients[i].id !== self.localClient.id){
+				        self.addRemoteClient($data.clients[i].id);
 			        }
 		        }
 
@@ -64,16 +64,12 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
 		        L.log('Message: ' + $e.data);
 
 		        var msg = JSON.parse($e.data);
-		        var data = null;
-
-		        if(msg.hasOwnProperty('data')){
-			        data = JSON.parse(msg.data);
-		        }
+		        var data = msg.data;
 
 		        switch(msg.messageType){
 			        case 'connect':
 				        initialConnect(data);
-				        L.log('ID: ' + self.clientId);
+				        L.log('ID: ' + self.localClient.id);
 				        geb.dispatchEvent(new NetEvent(NetEvent.CONNECTED));
 				        break;
 
@@ -96,14 +92,26 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
 
 	        };
 
+	        this.addLocalClient = function($clientId){
+		        var c = new Client($clientId, false);
+		        self.localClient = c;
+		        geb.dispatchEvent(new NetEvent(NetEvent.ADDED_CLIENT, c));
+	        };
+
 	        this.addRemoteClient = function($clientId){
-		        self.remoteClients.push(new Client($clientId));
+		        var c = new Client($clientId, true);
+		        self.remoteClients.push(c);
+		        geb.dispatchEvent(new NetEvent(NetEvent.ADDED_CLIENT, c));
+		        L.log('notify of added client');
 	        };
 
 	        this.removeRemoteClient = function($clientId){
 		        for(var i = 0; i < self.remoteClients.length; i++){
 			        if(self.remoteClients[i].id === $clientId){
+				        var c = self.remoteClients[i];
 				        self.remoteClients.splice(i,1);
+				        geb.dispatchEvent(new NetEvent(NetEvent.REMOVED_CLIENT,c));
+				        L.log('notify of removed client');
 				        break;
 			        }
 		        }

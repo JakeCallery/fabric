@@ -113,13 +113,12 @@ function GameServer($id){
 
 			var connectObj = {};
 			connectObj.clientId = client.id;
-			connectObj.remotes = [];
+			connectObj.clients = [];
 			for(var r = 0; r < group.clients.length; r++){
-				connectObj.remotes.push({id:group.clients[r].id});
+				connectObj.clients.push({id:group.clients[r].id});
 			}
-			var connectDataString = JSON.stringify(connectObj);
-			console.log('Connect String: ' + connectDataString);
-			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, connectDataString));
+			console.log('Connect String: ' + connectObj);
+			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, connectObj));
 			group.sendToGroupFromClient(new Message(client.id, Message.NEW_CLIENT, {clientId:client.id}), client);
 		}
 	};
