@@ -18,7 +18,11 @@ function Client($connection, $globalConnectionIndex) {
 	var self = this;
 
 	//TODO: Do a check for collisions within group on group add, recalc if needed
-	this.id = UUID.v4();
+	this.id = UUID.v4().split('-').join('');
+	//Hack to make sure first character isn't a number (used as a map property in client)
+	if(!isNaN(this.id.charAt(0))){
+		this.id = 'Z' + this.id;
+	}
 	this.connection = $connection;
 	this.group = null;
 	this.connectionIndex = $globalConnectionIndex;

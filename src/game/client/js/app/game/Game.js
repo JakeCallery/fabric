@@ -56,8 +56,8 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 			    L.log('added player to remote players: ' + this.gameState.remotePlayers.length);
 		    }
 
-		    this.gameState.allPlayers.push(p);
-		    L.log('added player to allPlayers: ' + this.gameState.allPlayers.length);
+		    this.gameState.allPlayersMap[p.id] = p;
+		    L.log('added player to allPlayers: ' + ObjUtils.countProps(this.gameState.allPlayersMap));
 	    };
 
 	    Game.prototype.removePlayer = function($player){
@@ -66,15 +66,13 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 			} else {
 				var rIdx = this.gameState.remotePlayers.indexOf($player);
 				if(rIdx != -1){
-					this.gameState.removePlayers.splice(rIdx,1);
+					this.gameState.remotePlayers.splice(rIdx,1);
 				}
 			}
 
-		    var idx = this.gameState.allPlayers.indexOf($player);
-		    if(idx != -1){
-			    this.gameState.allPlayers.splice(idx,1);
+		    if(this.gameState.allPlayersMap.hasOwnProperty($player.id)){
+			    delete(this.gameState.allPlayersMap[$player.id]);
 		    }
-
 	    };
 
         //Return constructor

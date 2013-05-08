@@ -6,8 +6,9 @@
 define([
 'jac/events/EventDispatcher',
 'jac/utils/ObjUtils',
-'app/net/Client'],
-function(EventDispatcher,ObjUtils, Client){
+'app/net/Client',
+'jac/logger/Logger'],
+function(EventDispatcher,ObjUtils, Client, L){
     return (function(){
         /**
          * Creates a Player object
@@ -20,6 +21,7 @@ function(EventDispatcher,ObjUtils, Client){
             EventDispatcher.call(this);
 
 	        /** @type {Client} */ this.client = $client;
+	        this.id = this.client.id;
 			this.isLocalPlayer = !this.client.isRemote;
 	        this.currentX = 0;
 	        this.currentY = 0;
@@ -29,7 +31,11 @@ function(EventDispatcher,ObjUtils, Client){
         
         //Inherit / Extend
         ObjUtils.inheritPrototype(Player,EventDispatcher);
-        
+
+	    Player.prototype.applyMessage = function($msgObj){
+		    L.log('Player Message: ' + $msgObj.data);
+	    };
+
         //Return constructor
         return Player;
     })();

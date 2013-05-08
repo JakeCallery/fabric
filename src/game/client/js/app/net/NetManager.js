@@ -10,15 +10,17 @@ define([
 'jac/events/GlobalEventBus',
 'jac/events/JacEvent',
 'app/net/Client',
-'app/net/events/NetEvent'],
-function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
+'app/net/events/NetEvent',
+'app/game/GameState'],
+function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState){
     return (function(){
         /**
          * Creates a NetManager object
+         * @param {GameState} $gameState
          * @extends {EventDispatcher}
          * @constructor
          */
-        function NetManager(){
+        function NetManager($gameState){
             //super
             EventDispatcher.call(this);
 
@@ -27,9 +29,16 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
 	        var geb = new GEB();
 	        var connectURL = 'ws://jachtml.com:5252';
 			var socket = null;
+			var messageEvent = new NetEvent(NetEvent.MESSAGE);
 
+	        /** @type {GameState} */
+	        this.gameState = $gameState;
+
+	        /** @type {array.<Client>} */
 	        this.remoteClients = [];
-	        /** @type {Client} */this.localClient = null;
+
+	        /** @type {Client} */
+	        this.localClient = null;
 
 	        var handleSocketOpen = function($e){
 		        L.log('Connected...');
@@ -73,20 +82,24 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent){
 				        geb.dispatchEvent(new NetEvent(NetEvent.CONNECTED));
 				        break;
 
-			        case 'newclient':
+			        case 'clientconnect':
 				        L.log('Caught New Remote Client: ' + msg.senderId);
 						self.addRemoteClient(msg.senderId);
 				        L.log('Num Remotes: ' + self.remoteClients.length);
 				        break;
 
-			        case 'remotedisconnect':
+			        case 'clientdisconnect':
 				        L.log('Caught Dropped Client: ' + data.clientId);
 				        self.removeRemoteClient(data.clientId);
 				        L.log('Num Remotes: ' + self.remoteClients.length);
 				        break;
 
 			        default:
-				        geb.dispatchEvent(new JacEvent('message', $e.data));
+				        if(msg.senderId != 0){
+							gameState.allPlayers[msg.senderId].applyMessage(msg);
+				        } else {
+					        geb.dispatchEvent(new NetEvent(NetEvent.SERVER_MESSAGE, msg));
+				        }
 				        break;
 		        }
 

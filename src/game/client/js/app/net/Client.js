@@ -14,7 +14,7 @@ function(){
          */
         function Client($id, $isRemote){
 	        this.id = $id;
-	        this.isRemote = $isRemote
+	        this.isRemote = $isRemote;
         }
         
         

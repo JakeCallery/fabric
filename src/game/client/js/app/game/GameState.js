@@ -13,7 +13,7 @@ function(){
         function GameState(){
 	        this.localPlayer = null;
 	        this.remotePlayers = [];
-	        this.allPlayers = [];
+	        this.allPlayersMap = {};
         }
         
         

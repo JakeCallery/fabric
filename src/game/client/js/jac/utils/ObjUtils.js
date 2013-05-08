@@ -41,6 +41,14 @@ define(function(){
 			return Object.prototype.toString.call($obj) === '[object Array]';
 		};
 
+		ObjUtils.countProps = function($objMap){
+			var count = 0;
+			for(var prop in $objMap){
+				count++;
+			}
+			return count;
+		};
+
 		return ObjUtils;
 	})();
 });

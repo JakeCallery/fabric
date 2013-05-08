@@ -40,7 +40,7 @@ Message.prototype.getJSONString = function(){
 };
 
 Message.CONNECT = 'connect';
-Message.NEW_CLIENT = 'newclient';
-Message.DISCONNECT = 'remotedisconnect';
+Message.CLIENT_CONNECT = 'clientconnect';
+Message.CLIENT_DISCONNECT = 'clientdisconnect';
 Message.UTF8 = 'utf8';
 Message.BINARY = 'binary';

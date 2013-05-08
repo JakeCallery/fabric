@@ -27,6 +27,8 @@ function(JacEvent,ObjUtils){
 	    /** @const */ NetEvent.DISCONNECTED = 'netDisconnectedEvent';
 	    /** @const */ NetEvent.REMOVED_CLIENT = 'netRemovedClientEvent';
 	    /** @const */ NetEvent.ADDED_CLIENT = 'netAddedClientEvent';
+	    /** @const */ NetEvent.MESSAGE = 'netMessageEvent';
+	    /** @const */ NetEvent.SERVER_MESSAGE = 'netServerMessageEvent';
 
         //Return constructor
         return NetEvent;
