@@ -11,8 +11,10 @@ module.exports = GameServer;
 var Events = require('events');
 var Group = require('./Group.js');
 var Client = require('./Client.js');
+var Message = require('./Message.js');
 var HTTP = require('http');
 var WebSocketServer = require('websocket').server;
+var SERVER_ID = 0;
 
 function GameServer($id){
 	//super
@@ -108,6 +110,9 @@ function GameServer($id){
 			if(group !== null){
 				group.addClient(client);
 			}
+
+			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, {clientId:client.id}));
+			group.sendToGroupFromClient(new Message(client.id, Message.NEW_CLIENT, {clientId:client.id}), client);
 		}
 	};
 
@@ -117,6 +122,8 @@ function GameServer($id){
 		console.log(new Date() + ' Peer ' + connection.remoteAddress + ' disconnected. / ' + $reasonCode + ': ' + $description);
 		connections.splice($client.connectionIndex, 1);
 		$client.removeListener('close', handleConnClose);
+		var group = $client.group;
+		group.sendToGroupFromClient(new Message($client.id, Message.DISCONNECT, {clientId:$client.id}), $client)
 	};
 
 	var handleEmptyGroup = function($group){
@@ -130,13 +137,7 @@ function GameServer($id){
 	var handleClientMessage = function($client, $message){
 		//for now echo to all clients in group
 		var grp = $client.group;
-		for(var i = 0, l=grp.clients.length; i < l; i++){
-			if($message.type === 'utf8'){
-				grp.clients[i].connection.sendUTF($message.utf8Data);
-			} else if($message.type === 'binary'){
-				grp.clients[i].connection.sendBytes($message.binaryData);
-			}
-		}
+		grp.sendToGroupFromClient($client, $message);
 	};
 
 	var checkOriginAllowed = function($origin){

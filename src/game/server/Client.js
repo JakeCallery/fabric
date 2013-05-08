@@ -7,6 +7,7 @@
  */
 
 var Events = require('events');
+var UUID = require('node-uuid');
 module.exports = Client;
 
 function Client($connection, $globalConnectionIndex) {
@@ -16,6 +17,7 @@ function Client($connection, $globalConnectionIndex) {
 
 	var self = this;
 
+	this.id = UUID.v4();
 	this.connection = $connection;
 	this.group = null;
 	this.connectionIndex = $globalConnectionIndex;
@@ -31,6 +33,14 @@ function Client($connection, $globalConnectionIndex) {
 	//Add listeners
 	this.connection.addListener('close', handleClose);
 	this.connection.addListener('message', handleMessage);
+
+	this.sendMessage = function($message){
+		if($message.dataType === 'utf8'){
+			this.connection.sendUTF($message.utf8Data);
+		} else if($message.dataType === 'binary'){
+			this.connection.sendBytes($message.binaryData);
+		}
+	};
 
 	this.destroy = function(){
 		this.connection.removeListener('close', handleClose);

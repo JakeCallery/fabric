@@ -49,6 +49,22 @@ function Group($id) {
 			self.emit('emptyGroup',self);
 		}
 	};
+
+	this.sendToGroupFromClient = function($message, $client){
+		for(var i = 0, l=this.clients.length; i < l; i++){
+			var c = this.clients[i];
+			if(c !== $client){
+				c.sendMessage($message);
+			}
+		}
+	};
+
+	this.sendToAll = function($message){
+		for(var i = 0, l = this.clients.length; i < l; i++){
+			var c = this.clients[i];
+			c.sendMessage($message);
+		}
+	};
 }
 
 Group.super_ = Events.EventEmitter;

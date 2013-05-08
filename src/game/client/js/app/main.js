@@ -3,10 +3,15 @@
  * User: Jake
  */
 
+//TODO: NEXT
+/**
+ * When a new client connects, send back the already connected clients
+ */
+
 define([
 'jac/logger/Logger',
 'jac/logger/ConsoleTarget',
-'app/NetManager',
+'app/net/NetManager',
 'app/ViewManager'],
 function(L, ConsoleTarget, NetManager, ViewManager){
     return (function(){
