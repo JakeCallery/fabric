@@ -41,6 +41,10 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 	        this.renderDelegate = EventUtils.bind(self, self.render);
 	        this.updateStatsDelegate = EventUtils.bind(self, self.updateStats);
 
+	        //View elements
+	        this.gameCanvas = this.doc.getElementById('gameCanvas');
+	        this.gameCtx = this.gameCanvas.getContext('2d');
+
 	        //Set up stats
 	        this.stats.setMode(0);
 	        this.doc.getElementById('statsDiv').appendChild(this.stats.domElement);
@@ -64,6 +68,12 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 	    ViewManager.prototype.render = function(){
 			var self = this;
 		    this.animationFrameId = this.window.requestAnimationFrame(self.renderDelegate);
+
+		    //TMP
+		    this.gameCtx.fillStyle = '#000000';
+		    this.gameCtx.fillRect(0,0,600,600);
+		    /////////////////////
+
 	    };
 
 	    ViewManager.prototype.handleConnected = function($e){
