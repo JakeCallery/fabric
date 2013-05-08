@@ -10,8 +10,9 @@ define([
 'app/net/events/NetEvent',
 'jac/utils/EventUtils',
 'app/game/GameState',
-'jac/logger/Logger'],
-function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L){
+'jac/logger/Logger',
+'stats'],
+function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats){
     return (function(){
         /**
          * Creates a ViewManager object
@@ -31,10 +32,19 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L){
 	        this.doc = $doc;
 	        this.nav = $navigator;
 	        this.gs = $gameState;
-	        this.geb = new GEB();
-			this.animationFrameId = null;
 
+	        this.stats = new Stats();
+	        this.geb = new GEB();
+
+	        this.animationFrameId = null;
+	        this.statsAnimationFrameId = null;
 	        this.renderDelegate = EventUtils.bind(self, self.render);
+	        this.updateStatsDelegate = EventUtils.bind(self, self.updateStats);
+
+	        //Set up stats
+	        this.stats.setMode(0);
+	        this.doc.getElementById('statsDiv').appendChild(this.stats.domElement);
+			this.updateStats();
 
 			this.geb.addHandler(NetEvent.CONNECTED, EventUtils.bind(self, self.handleConnected));
 	        this.geb.addHandler(NetEvent.DISCONNECTED, EventUtils.bind(self, self.handleDisconnected));
@@ -44,10 +54,16 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L){
         //Inherit / Extend
         ObjUtils.inheritPrototype(ViewManager,EventDispatcher);
 
+	    ViewManager.prototype.updateStats = function(){
+		    var self = this;
+		    this.statsAnimationFrameId = this.window.requestAnimationFrame(self.updateStatsDelegate);
+		    this.stats.update();
+	    };
+
+
 	    ViewManager.prototype.render = function(){
 			var self = this;
 		    this.animationFrameId = this.window.requestAnimationFrame(self.renderDelegate);
-		    //TODO: add in stats update here
 	    };
 
 	    ViewManager.prototype.handleConnected = function($e){
