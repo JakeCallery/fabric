@@ -111,7 +111,15 @@ function GameServer($id){
 				group.addClient(client);
 			}
 
-			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, {clientId:client.id}));
+			var connectObj = {};
+			connectObj.clientId = client.id;
+			connectObj.remotes = [];
+			for(var r = 0; r < group.clients.length; r++){
+				connectObj.remotes.push({id:group.clients[r].id});
+			}
+			var connectDataString = JSON.stringify(connectObj);
+			console.log('Connect String: ' + connectDataString);
+			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, connectDataString));
 			group.sendToGroupFromClient(new Message(client.id, Message.NEW_CLIENT, {clientId:client.id}), client);
 		}
 	};

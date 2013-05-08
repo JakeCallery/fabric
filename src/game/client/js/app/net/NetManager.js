@@ -42,6 +42,24 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
 		        L.log('Socket Closed');
 	        };
 
+	        var initialConnect = function($data){
+		        L.log('Caught Initial Connect');
+
+		        var dataObj = JSON.parse($data);
+
+		        self.clientId = dataObj.clientId;
+
+		        //add remotes
+		        for(var i = 0; i < dataObj.remotes.length; i++){
+			        if(dataObj.remotes[i].id !== self.clientId){
+				        self.addRemoteClient(dataObj.remotes[i].id);
+			        }
+		        }
+
+		        L.log('Num Remotes: ' + self.remoteClients.length);
+
+	        };
+
 	        var handleSocketMessage = function($e){
 		        L.log('Message: ' + $e.data);
 
@@ -54,7 +72,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
 
 		        switch(msg.messageType){
 			        case 'connect':
-					    self.clientId = data.clientId;
+				        initialConnect(data);
 				        L.log('ID: ' + self.clientId);
 				        break;
 

@@ -12,8 +12,9 @@ define([
 'jac/logger/Logger',
 'jac/logger/ConsoleTarget',
 'app/net/NetManager',
-'app/ViewManager'],
-function(L, ConsoleTarget, NetManager, ViewManager){
+'app/ViewManager',
+'json2'],
+function(L, ConsoleTarget, NetManager, ViewManager, JSON){
     return (function(){
 	    L.addLogTarget(new ConsoleTarget());
 	    L.log('New Main!');
