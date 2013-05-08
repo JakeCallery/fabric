@@ -45,14 +45,12 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, RemoteClient){
 	        var initialConnect = function($data){
 		        L.log('Caught Initial Connect');
 
-		        var dataObj = JSON.parse($data);
-
-		        self.clientId = dataObj.clientId;
+		        self.clientId = $data.clientId;
 
 		        //add remotes
-		        for(var i = 0; i < dataObj.remotes.length; i++){
-			        if(dataObj.remotes[i].id !== self.clientId){
-				        self.addRemoteClient(dataObj.remotes[i].id);
+		        for(var i = 0; i < $data.remotes.length; i++){
+			        if($data.remotes[i].id !== self.clientId){
+				        self.addRemoteClient($data.remotes[i].id);
 			        }
 		        }
 

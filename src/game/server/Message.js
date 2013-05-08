@@ -34,7 +34,8 @@ Message.prototype.getJSONString = function(){
 	var obj = {};
 	obj.senderId = this.senderId;
 	obj.messageType = this.messageType;
-	obj.data = JSON.stringify(this.data);
+	//obj.data = JSON.stringify(this.data);
+	obj.data = this.data;
 	obj.dataType = this.dataType;
 	return JSON.stringify(obj);
 };
