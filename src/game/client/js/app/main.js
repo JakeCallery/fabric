@@ -33,6 +33,7 @@ function(doc, L, ConsoleTarget, NetManager, ViewManager, JSON, RequestAnimationF
 	    //L.addTag('@gameUpdate');
 	    L.isTagFilterEnabled = true;
 	    L.isShowingUnTagged = true;
+	    L.isEnabled = true;
 
 	    var self = this;
 	    var geb = new GEB();

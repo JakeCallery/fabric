@@ -77,6 +77,7 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 		    if(p.isLocalPlayer === true){
 			    this.gameState.localPlayer = p;
+			    this.gameState.localPlayer.color = '#FF0000';
 			    L.log('set player as local', '@game');
 		    } else {
 			    this.gameState.remotePlayers.push(p);

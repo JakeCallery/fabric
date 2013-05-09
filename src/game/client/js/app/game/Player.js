@@ -23,6 +23,7 @@ function(EventDispatcher,ObjUtils, Client, L){
 	        /** @type {Client} */ this.client = $client;
 	        this.id = this.client.id;
 			this.isLocalPlayer = !this.client.isRemote;
+	        this.color = '#00FF00';
 	        this.currentX = 0;
 	        this.currentY = 0;
 	        this.targetX = 0;
