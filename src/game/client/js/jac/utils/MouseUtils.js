@@ -12,26 +12,29 @@ function(){
 	     * Returns and object with x and y properties that contain the relative x/y coords of the click
 	     * @param {Object} $domTarget
 	     * @param {Event} $clickEvent
+	     * @param {Object} [$propObj] you can provide your own object for .x and .y to be set on.  good to keep the number of new objects to a min
 	     * @returns {Object} this object has .x and .y props
 	     */
-	    MouseUtils.getRelCoords = function($domTarget, $clickEvent){
-	        if($clickEvent.offsetX !== undefined && $clickEvent.offsetY !== undefined){
-		        return {x:$clickEvent.offsetX, y:$clickEvent.offsetY}
+	    MouseUtils.getRelCoords = function($domTarget, $clickEvent, $propObj){
+	        var returnObj = $propObj || {};
+
+		    if($clickEvent.offsetX !== undefined && $clickEvent.offsetY !== undefined){
+		        returnObj.x = $clickEvent.offsetX;
+		        returnObj.y = $clickEvent.offsetY;
+			    return returnObj;
 	        } else {
 			    var totalOffsetX = 0;
 			    var totalOffsetY = 0;
 			    var currentElement = $domTarget;
 
-			    do{
+			    do {
 				    totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
 				    totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
-			    }
-			    while(currentElement = currentElement.offsetParent);
+			    } while(currentElement = currentElement.offsetParent);
 
-			    var targetX = $clickEvent.pageX - totalOffsetX;
-			    var targetY = $clickEvent.pageY - totalOffsetY;
-
-			    return {x:targetX, y:targetY};
+			    returnObj.x = $clickEvent.pageX - totalOffsetX;
+			    returnObj.y = $clickEvent.pageY - totalOffsetY;
+			    return returnObj;
 	        }
 	    };
         

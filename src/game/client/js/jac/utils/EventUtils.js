@@ -19,12 +19,26 @@ define(function(){
 		EventUtils.addDomListener = function($domTarget, $type, $handler){
 			if($domTarget.addEventListener){
 				$domTarget.addEventListener($type, $handler, false);
+			} else if($domTarget.attachEvent) {
+				$domTarget.attachEvent('on'+$type, $handler);
+			} else {
+				$domTarget['on'+$type] = $handler;
 			}
-			else if($domTarget.attachEvent) {
-				$domTarget.attachEvent("on"+$type, $handler);
-			}
-			else {
-				$domTarget["on"+$type] = $handler;
+		};
+
+		/**
+		 * Crossbrowser way of removing a handler from a DOM event dispatcher
+		 * @param {Object} $domTarget
+		 * @param {String} $type
+		 * @param {Function} $handler
+		 */
+		EventUtils.removeDomListener = function($domTarget, $type, $handler){
+			if($domTarget.removeEventListener){
+				$domTarget.removeEventListener($type, $handler, false);
+			} else if($domTarget.detachEvent){
+				$domTarget.detachEvent('on' + $type, $handler);
+			} else {
+				$domTarget['on'+$type] = null;
 			}
 		};
 
