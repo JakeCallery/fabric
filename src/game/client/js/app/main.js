@@ -26,15 +26,16 @@ function(doc, L, ConsoleTarget, NetManager, ViewManager, JSON, RequestAnimationF
 	    L.addTag('@mouse');
 	    L.addTag('@touch');
 	    L.addTag('@game');
+	    //L.addTag('@vmrender');
 	    //L.addTag('@gameUpdate');
 	    L.isTagFilterEnabled = true;
 	    L.isShowingUnTagged = true;
 
 	    var gameState = new GameState();
 	    var im = new InputManager(doc.getElementById('gameCanvas'),gameState);
-		var game = new Game(gameState, window);
-	    var nm = new NetManager();
 	    var vm = new ViewManager(window, doc, navigator, gameState);
+		var game = new Game(gameState, window, vm);
+	    var nm = new NetManager();
 
 	    //Tmp hard connect to testgroup1 for now
 	    //TODO: proper group connection based on url params

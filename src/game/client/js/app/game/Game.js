@@ -18,10 +18,11 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
          * Creates a Game object
          * @param {GameState} $gameState
          * @param {window} $window
+         * @param {ViewManager} $viewManager
          * @extends {EventDispatcher}
          * @constructor
          */
-        function Game($gameState, $window){
+        function Game($gameState, $window, $viewManager){
             //super
             EventDispatcher.call(this);
 	        var self = this;
@@ -32,6 +33,8 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 	        this.animationFrameId = null;
 	        this.updateDelegate = EventUtils.bind(self, self.update);
+
+	        this.viewManager = $viewManager;
 
 			this.geb.addHandler(NetEvent.ADDED_CLIENT, EventUtils.bind(self, self.handleAddedClient));
 			this.geb.addHandler(NetEvent.REMOVED_CLIENT, EventUtils.bind(self, self.handleRemovedClient));
@@ -48,7 +51,11 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 	    Game.prototype.update = function(){
 		    var self = this;
 		    this.animationFrameId = this.window.requestAnimationFrame(self.updateDelegate);
+
 		    L.log('Game Update', '@gameUpdate');
+
+			this.viewManager.render();
+
 	    };
 
 	    Game.prototype.handleAddedClient = function($e){

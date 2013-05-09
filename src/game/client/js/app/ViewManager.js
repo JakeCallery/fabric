@@ -38,7 +38,7 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 
 	        this.animationFrameId = null;
 	        this.statsAnimationFrameId = null;
-	        this.renderDelegate = EventUtils.bind(self, self.render);
+	        //this.renderDelegate = EventUtils.bind(self, self.render);
 	        this.updateStatsDelegate = EventUtils.bind(self, self.updateStats);
 
 	        //View elements
@@ -67,8 +67,8 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 
 	    ViewManager.prototype.render = function(){
 			var self = this;
-		    this.animationFrameId = this.window.requestAnimationFrame(self.renderDelegate);
-
+		    //this.animationFrameId = this.window.requestAnimationFrame(self.renderDelegate);
+		    L.log('VM Render', '@vmrender');
 		    //TMP
 		    this.gameCtx.fillStyle = '#000000';
 		    this.gameCtx.fillRect(0,0,600,600);
@@ -78,8 +78,6 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 
 	    ViewManager.prototype.handleConnected = function($e){
 		    L.log('VM Caught connect');
-		    var self = this;
-		    self.render();
 	    };
 
 	    ViewManager.prototype.handleDisconnected = function($e){
