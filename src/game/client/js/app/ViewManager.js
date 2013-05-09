@@ -31,7 +31,7 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 	        this.window = $window;
 	        this.doc = $doc;
 	        this.nav = $navigator;
-	        this.gs = $gameState;
+	        this.gameState = $gameState;
 
 	        this.stats = new Stats();
 	        this.geb = new GEB();
@@ -69,11 +69,16 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 			var self = this;
 		    //this.animationFrameId = this.window.requestAnimationFrame(self.renderDelegate);
 		    L.log('VM Render', '@vmrender');
-		    //TMP
+
+		    //Clear //TODO: maybe use dirty rects, or some smarter clearing
 		    this.gameCtx.fillStyle = '#000000';
 		    this.gameCtx.fillRect(0,0,600,600);
-		    /////////////////////
 
+		    //Render local player
+		    this.gameCtx.beginPath();
+		    this.gameCtx.arc(this.gameState.localPlayer.targetX, this.gameState.localPlayer.targetY, 20,0,2*Math.PI, false);
+		    this.gameCtx.fillStyle = '#FF0000';
+		    this.gameCtx.fill();
 	    };
 
 	    ViewManager.prototype.handleConnected = function($e){

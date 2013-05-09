@@ -54,6 +54,9 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 		    L.log('Game Update', '@gameUpdate');
 
+		    this.gameState.localPlayer.targetX = this.gameState.primaryX;
+		    this.gameState.localPlayer.targetY = this.gameState.primaryY;
+
 			this.viewManager.render();
 
 	    };
@@ -86,6 +89,7 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 	    Game.prototype.removePlayer = function($player){
 			if($player.isLocalPlayer === true){
+				L.log('Removing Local Player');
 				this.gameState.localPlayer = null;
 			} else {
 				var rIdx = this.gameState.remotePlayers.indexOf($player);

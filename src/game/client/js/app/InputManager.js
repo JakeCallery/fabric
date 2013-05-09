@@ -62,9 +62,13 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 		    }
 
 		    var coords = {};
-		    TouchUtils.getRelCoords(this.inputEl, $e.changedTouches[0], coords);
-		    this.gameState.primaryX = coords.x;
-		    this.gameState.primaryY = coords.y;
+		    if(this.activeTouches.length > 0){
+			    TouchUtils.getRelCoords(this.inputEl, this.activeTouches[0], coords);
+			    this.gameState.primaryX = coords.x;
+			    this.gameState.primaryY = coords.y;
+			    L.log('X/Y: ' + this.gameState.primaryX + ',' + this.gameState.primaryY, '@touch');
+		    }
+
 
 	    };
 
@@ -81,7 +85,7 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 	    };
 
 	    InputManager.prototype.handleTouchMove = function($e){
-		    L.log('Caught Touch Move: ' + $e.changedTouches.length, '@touch');
+		    //L.log('Caught Touch Move: ' + $e.changedTouches.length, '@touch');
 		    $e.preventDefault();
 
 			var idx = -1;
@@ -94,9 +98,10 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 
 		    if(this.activeTouches.length > 0){
 			    var coords = {};
-			    TouchUtils.getRelCoords(this.inputEl, $e.changedTouches[0], coords);
+			    TouchUtils.getRelCoords(this.inputEl, this.activeTouches[0], coords);
 			    this.gameState.primaryX = coords.x;
 			    this.gameState.primaryY = coords.y;
+			    L.log('X/Y: ' + this.gameState.primaryX + ',' + this.gameState.primaryY, '@touch');
 		    }
 	    };
 
@@ -133,6 +138,8 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 		    var obj = {};
 		    MouseUtils.getRelCoords(this.inputEl, $e, obj);
 		    L.log('Caught Mouse Move: ' + obj.x + ',' + obj.y, '@mouse');
+		    this.gameState.primaryX = obj.x;
+		    this.gameState.primaryY = obj.y;
 	    };
 
 	    InputManager.prototype.handleMouseUp = function($e){

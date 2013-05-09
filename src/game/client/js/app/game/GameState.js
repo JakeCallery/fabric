@@ -11,6 +11,8 @@ function(){
          * @constructor
          */
         function GameState(){
+	        this.primaryX = 0;
+	        this.primaryY = 0;
 	        this.localPlayer = null;
 	        this.remotePlayers = [];
 	        this.allPlayersMap = {};
