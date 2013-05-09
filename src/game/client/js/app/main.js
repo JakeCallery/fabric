@@ -23,16 +23,25 @@ function(doc, L, ConsoleTarget, NetManager, ViewManager, JSON, RequestAnimationF
     return (function(){
 	    L.addLogTarget(new ConsoleTarget());
 	    L.log('New Main!');
+	    L.addTag('@mouse');
+	    L.addTag('@touch');
+	    L.addTag('@game');
+	    //L.addTag('@gameUpdate');
+	    L.isTagFilterEnabled = true;
+	    L.isShowingUnTagged = true;
 
-	    var im = new InputManager(doc.getElementById('gameCanvas'));
 	    var gameState = new GameState();
-		var game = new Game(gameState);
+	    var im = new InputManager(doc.getElementById('gameCanvas'),gameState);
+		var game = new Game(gameState, window);
 	    var nm = new NetManager();
 	    var vm = new ViewManager(window, doc, navigator, gameState);
 
 	    //Tmp hard connect to testgroup1 for now
 	    //TODO: proper group connection based on url params
 	    nm.connect('testgroup1');
+
+	    //TODO: Wait for connect before starting
+	    game.start();
 
     })();
 });

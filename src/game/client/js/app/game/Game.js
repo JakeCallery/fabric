@@ -16,16 +16,23 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
     return (function(){
         /**
          * Creates a Game object
+         * @param {GameState} $gameState
+         * @param {window} $window
          * @extends {EventDispatcher}
          * @constructor
          */
-        function Game($gameState){
+        function Game($gameState, $window){
             //super
             EventDispatcher.call(this);
+	        var self = this;
+
 	        this.geb = new GEB();
 	        this.gameState = $gameState;
+			this.window = $window;
 
-	        var self = this;
+	        this.animationFrameId = null;
+	        this.updateDelegate = EventUtils.bind(self, self.update);
+
 			this.geb.addHandler(NetEvent.ADDED_CLIENT, EventUtils.bind(self, self.handleAddedClient));
 			this.geb.addHandler(NetEvent.REMOVED_CLIENT, EventUtils.bind(self, self.handleRemovedClient));
 
@@ -34,13 +41,23 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
         //Inherit / Extend
         ObjUtils.inheritPrototype(Game,EventDispatcher);
 
+		Game.prototype.start = function(){
+			this.update();
+	    };
+
+	    Game.prototype.update = function(){
+		    var self = this;
+		    this.animationFrameId = this.window.requestAnimationFrame(self.updateDelegate);
+		    L.log('Game Update', '@gameUpdate');
+	    };
+
 	    Game.prototype.handleAddedClient = function($e){
-		    L.log('Game caught added client');
+		    L.log('Game caught added client', '@game');
 		    this.makePlayer($e.data);
 	    };
 
 	    Game.prototype.handleRemovedClient = function($e){
-		    L.log('Game caught removed client');
+		    L.log('Game caught removed client', '@game');
 		    this.removePlayer($e.data);
 	    };
 
@@ -50,14 +67,14 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 		    if(p.isLocalPlayer === true){
 			    this.gameState.localPlayer = p;
-			    L.log('set player as local');
+			    L.log('set player as local', '@game');
 		    } else {
 			    this.gameState.remotePlayers.push(p);
-			    L.log('added player to remote players: ' + this.gameState.remotePlayers.length);
+			    L.log('added player to remote players: ' + this.gameState.remotePlayers.length, '@game');
 		    }
 
 		    this.gameState.allPlayersMap[p.id] = p;
-		    L.log('added player to allPlayers: ' + ObjUtils.countProps(this.gameState.allPlayersMap));
+		    L.log('added player to allPlayers: ' + ObjUtils.countProps(this.gameState.allPlayersMap, '@game'));
 	    };
 
 	    Game.prototype.removePlayer = function($player){

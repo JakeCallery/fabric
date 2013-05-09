@@ -15,16 +15,19 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
         /**
          * Creates a InputManager object
          * @param {Element} $inputDomEl
+         * @param {GameState} $gameState
          * @extends {EventDispatcher}
          * @constructor
          */
-        function InputManager($inputDomEl){
+        function InputManager($inputDomEl, $gameState){
             //super
             EventDispatcher.call(this);
 
 	        var self = this;
 	        this.inputEl = $inputDomEl;
 			this.activeTouches = [];
+
+	        this.gameState = $gameState;
 
 	        //Mouse Event Delegates
 	        this.mouseDownDelegate = EventUtils.bind(self, self.handleMouseDown);
@@ -51,16 +54,22 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
         ObjUtils.inheritPrototype(InputManager,EventDispatcher);
 
 	    InputManager.prototype.handleTouchStart = function($e){
-		    L.log('Caught Touch Start: ' + $e.changedTouches.length);
+		    L.log('Caught Touch Start: ' + $e.changedTouches.length + ' / ' + $e.changedTouches[0].identifier, '@touch');
 			$e.preventDefault();
+
 		    for(var i = 0, l = $e.changedTouches.length; i < l; i++){
 			    this.activeTouches.push($e.changedTouches[i]);
 		    }
 
+		    var coords = {};
+		    TouchUtils.getRelCoords(this.inputEl, $e.changedTouches[0], coords);
+		    this.gameState.primaryX = coords.x;
+		    this.gameState.primaryY = coords.y;
+
 	    };
 
 	    InputManager.prototype.handleTouchEnd = function($e){
-		    L.log('Caught Touch End: ' + $e.changedTouches.length);
+		    L.log('Caught Touch End: ' + $e.changedTouches.length, '@touch');
 		    $e.preventDefault();
 		    var idx = -1;
 		    for(var i = 0, l = $e.changedTouches.length; i < l; i++){
@@ -72,7 +81,7 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 	    };
 
 	    InputManager.prototype.handleTouchMove = function($e){
-		    L.log('Caught Touch Move: ' + $e.changedTouches.length);
+		    L.log('Caught Touch Move: ' + $e.changedTouches.length, '@touch');
 		    $e.preventDefault();
 
 			var idx = -1;
@@ -83,10 +92,16 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 			    }
 		    }
 
+		    if(this.activeTouches.length > 0){
+			    var coords = {};
+			    TouchUtils.getRelCoords(this.inputEl, $e.changedTouches[0], coords);
+			    this.gameState.primaryX = coords.x;
+			    this.gameState.primaryY = coords.y;
+		    }
 	    };
 
 	    InputManager.prototype.handleTouchCancel = function($e){
-		    L.log('Caught Touch Cancel: ' + $e.changedTouches.length);
+		    L.log('Caught Touch Cancel: ' + $e.changedTouches.length, '@touch');
 		    $e.preventDefault();
 		    var idx = -1;
 		    for(var i = 0, l = $e.changedTouches.length; i < l; i++){
@@ -104,7 +119,10 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 	    InputManager.prototype.handleMouseDown = function($e){
 		    var obj = {};
 		    MouseUtils.getRelCoords(this.inputEl, $e, obj);
-	        L.log('Caught Mouse Down: ' + obj.x + ',' + obj.y);
+	        L.log('Caught Mouse Down: ' + obj.x + ',' + obj.y, '@mouse');
+
+		    this.gameState.primaryX = obj.x;
+		    this.gameState.primaryY = obj.y;
 
 		    EventUtils.addDomListener(this.inputEl, 'mousemove', this.mouseMoveDelegate);
 		    EventUtils.addDomListener(this.inputEl, 'mouseup', this.mouseUpDelegate);
@@ -114,13 +132,13 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 	    InputManager.prototype.handleMouseMove = function($e){
 		    var obj = {};
 		    MouseUtils.getRelCoords(this.inputEl, $e, obj);
-		    L.log('Caught Mouse Move: ' + obj.x + ',' + obj.y);
+		    L.log('Caught Mouse Move: ' + obj.x + ',' + obj.y, '@mouse');
 	    };
 
 	    InputManager.prototype.handleMouseUp = function($e){
 		    var obj = {};
 		    MouseUtils.getRelCoords(this.inputEl, $e, obj);
-		    L.log('Caught Mouse Up: ' + obj.x + ',' + obj.y);
+		    L.log('Caught Mouse Up: ' + obj.x + ',' + obj.y, '@mouse');
 
 		    EventUtils.removeDomListener(this.inputEl, 'mousemove', this.mouseMoveDelegate);
 		    EventUtils.removeDomListener(this.inputEl, 'mouseup', this.mouseUpDelegate);
@@ -130,7 +148,7 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 	    InputManager.prototype.handleMouseOut = function($e){
 		    var obj = {};
 		    MouseUtils.getRelCoords(this.inputEl, $e, obj);
-		    L.log('Caught Mouse Out: ' + obj.x + ',' + obj.y);
+		    L.log('Caught Mouse Out: ' + obj.x + ',' + obj.y, '@mouse');
 
 		    EventUtils.removeDomListener(this.inputEl, 'mousemove', this.mouseMoveDelegate);
 		    EventUtils.removeDomListener(this.inputEl, 'mouseup', this.mouseUpDelegate);
