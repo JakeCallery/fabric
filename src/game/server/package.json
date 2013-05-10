@@ -1,0 +1,28 @@
+{
+	"name":"FabricServer",
+	"version":"0.0.19",
+
+	"author":{
+		"name":"Jake Callery",
+		 "email":"<jake@subvoicestudios.com>"
+	},
+
+	"description":"Game server for the Fabric Game",
+
+	"dependencies": {
+		"websocket" : "1.0.8",
+		"node-uuid" : "1.4.0"
+	},
+
+	"scripts":{
+		"start":"node main.js"
+	},
+
+	"engines":{
+		"node":"0.10.0"
+	},
+
+	"subdomain":"jac-fabric",
+
+	"analyze":true
+}

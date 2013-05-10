@@ -1,0 +1,14 @@
+{
+	"name":"FabricClient",
+	"version":"0.0.19",
+
+	"author":{
+		"name":"Jake Callery",
+		"email":"<jake@subvoicestudios.com>"
+	},
+
+	"description":"Web client for the Fabric Game",
+	"dependencies": {
+		"requirejs" :"*"
+	}
+}
