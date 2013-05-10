@@ -26,6 +26,10 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 
 	        var self = this;
 
+	        /** @const */ var THROTTLE_COUNT = 1;
+			var updateCount = 0;
+
+	        var gameState = $gameState;
 	        var geb = new GEB();
 	        var connectURL = 'ws://jachtml.com:5252';
 			var socket = null;
@@ -70,8 +74,6 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 	        };
 
 	        var handleSocketMessage = function($e){
-		        L.log('Message: ' + $e.data);
-
 		        var msg = JSON.parse($e.data);
 		        var data = msg.data;
 
@@ -96,12 +98,29 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 
 			        default:
 				        if(msg.senderId != 0){
-							gameState.allPlayers[msg.senderId].applyMessage(msg);
+							gameState.allPlayersMap[msg.senderId].applyMessage(msg);
 				        } else {
 					        geb.dispatchEvent(new NetEvent(NetEvent.SERVER_MESSAGE, msg));
 				        }
 				        break;
 		        }
+
+	        };
+
+	        this.update = function(){
+		        if(updateCount >= THROTTLE_COUNT){
+			        updateCount = -1;
+			        var msg = {};
+			        msg.senderId = gameState.localPlayer.id;
+			        msg.messageType = 'clientupdate';
+			        msg.dataType = 'utf8';
+			        msg.data = {};
+			        msg.data.targetX = this.gameState.localPlayer.targetX;
+			        msg.data.targetY = this.gameState.localPlayer.targetY;
+			        socket.send(JSON.stringify(msg));
+		        }
+
+		        updateCount++;
 
 	        };
 

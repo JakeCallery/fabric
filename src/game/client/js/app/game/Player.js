@@ -34,7 +34,11 @@ function(EventDispatcher,ObjUtils, Client, L){
         ObjUtils.inheritPrototype(Player,EventDispatcher);
 
 	    Player.prototype.applyMessage = function($msgObj){
-		    L.log('Player Message: ' + $msgObj.data);
+		    for(var prop in $msgObj.data){
+			    if($msgObj.data.hasOwnProperty(prop)){
+				    this[prop] = $msgObj.data[prop];
+			    }
+		    }
 	    };
 
         //Return constructor

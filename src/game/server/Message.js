@@ -16,12 +16,12 @@ function Message($senderId, $messageType, $data, $dataType){
 	this.senderId = $senderId;
 	this.messageType = $messageType;
 	this.data = $data;
-	this.dataType = $dataType || Message.UTF8;
+	this.type = $dataType || Message.UTF8;
 
 	this.utf8Data = null;
 	this.binaryData = null;
 
-	if(this.dataType == Message.UTF8){
+	if(this.type == Message.UTF8){
 		this.utf8Data = self.getJSONString();
 	} else {
 		//TODO: implement binary data if needed
@@ -35,7 +35,7 @@ Message.prototype.getJSONString = function(){
 	obj.senderId = this.senderId;
 	obj.messageType = this.messageType;
 	obj.data = this.data;
-	obj.dataType = this.dataType;
+	obj.type = this.type;
 	return JSON.stringify(obj);
 };
 

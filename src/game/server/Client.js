@@ -40,18 +40,18 @@ function Client($connection, $globalConnectionIndex) {
 	this.connection.addListener('message', handleMessage);
 
 	this.sendMessage = function($message){
-		if($message.dataType === 'utf8'){
-			this.connection.sendUTF($message.utf8Data);
-		} else if($message.dataType === 'binary'){
-			this.connection.sendBytes($message.binaryData);
+		if($message.type === 'utf8'){
+			self.connection.sendUTF($message.utf8Data);
+		} else if($message.type === 'binary'){
+			self.connection.sendBytes($message.binaryData);
 		}
 	};
 
 	this.destroy = function(){
-		this.connection.removeListener('close', handleClose);
-		this.connection = null;
-		this.group = null;
-		this.connectionIndex = null;
+		self.connection.removeListener('close', handleClose);
+		self.connection = null;
+		self.group = null;
+		self.connectionIndex = null;
 	}
 }
 

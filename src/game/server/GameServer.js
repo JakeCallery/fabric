@@ -119,7 +119,7 @@ function GameServer($id){
 			}
 			console.log('Connect String: ' + connectObj);
 			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, connectObj));
-			group.sendToGroupFromClient(new Message(client.id, Message.CLIENT_CONNECT, {clientId:client.id}), client);
+			group.sendToGroupFromClient(client, new Message(client.id, Message.CLIENT_CONNECT, {clientId:client.id}));
 		}
 	};
 

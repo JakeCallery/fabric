@@ -11,18 +11,20 @@ define([
 'app/game/Player',
 'app/net/events/NetEvent',
 'jac/utils/EventUtils',
-'jac/logger/Logger'],
-function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils, L){
+'jac/logger/Logger',
+'app/net/NetManager'],
+function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils, L, NetManager){
     return (function(){
         /**
          * Creates a Game object
          * @param {GameState} $gameState
          * @param {window} $window
          * @param {ViewManager} $viewManager
+         * @param {NetManager} $netManager
          * @extends {EventDispatcher}
          * @constructor
          */
-        function Game($gameState, $window, $viewManager){
+        function Game($gameState, $window, $viewManager, $netManager){
             //super
             EventDispatcher.call(this);
 	        var self = this;
@@ -35,6 +37,7 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 	        this.updateDelegate = EventUtils.bind(self, self.update);
 
 	        this.viewManager = $viewManager;
+			this.netManager = $netManager;
 
 			this.geb.addHandler(NetEvent.ADDED_CLIENT, EventUtils.bind(self, self.handleAddedClient));
 			this.geb.addHandler(NetEvent.REMOVED_CLIENT, EventUtils.bind(self, self.handleRemovedClient));
@@ -58,6 +61,8 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 		    this.gameState.localPlayer.targetY = this.gameState.primaryY;
 
 			this.viewManager.render();
+
+		    this.netManager.update();
 
 	    };
 

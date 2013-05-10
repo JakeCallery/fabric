@@ -29,6 +29,7 @@ function(doc, L, ConsoleTarget, NetManager, ViewManager, JSON, RequestAnimationF
 	    //L.addTag('@mouse');
 	    L.addTag('@touch');
 	    L.addTag('@game');
+	    L.addTag('@net');
 	    //L.addTag('@vmrender');
 	    //L.addTag('@gameUpdate');
 	    L.isTagFilterEnabled = true;
@@ -40,8 +41,8 @@ function(doc, L, ConsoleTarget, NetManager, ViewManager, JSON, RequestAnimationF
 	    var gameState = new GameState();
 	    var im = new InputManager(doc.getElementById('gameCanvas'),gameState);
 	    var vm = new ViewManager(window, doc, navigator, gameState);
-		var game = new Game(gameState, window, vm);
-	    var nm = new NetManager();
+	    var nm = new NetManager(gameState);
+		var game = new Game(gameState, window, vm, nm);
 
 	    geb.addHandler(NetEvent.CONNECTED, EventUtils.bind(self, handleConnected));
 

@@ -50,7 +50,7 @@ function Group($id) {
 		}
 	};
 
-	this.sendToGroupFromClient = function($message, $client){
+	this.sendToGroupFromClient = function($client, $message){
 		for(var i = 0, l=this.clients.length; i < l; i++){
 			var c = this.clients[i];
 			if(c !== $client){
