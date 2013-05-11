@@ -26,12 +26,13 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 
 	        var self = this;
 
-	        /** @const */ var THROTTLE_COUNT = 1;
+	        /** @const */ var THROTTLE_COUNT = 2;
 			var updateCount = 0;
 
 	        var gameState = $gameState;
 	        var geb = new GEB();
-	        var connectURL = 'ws://jachtml.com:5252';
+	        //var connectURL = 'ws://jac-fabric.nodejitsu.com:80'; //jitsu url
+	        var connectURL = 'ws://jachtml.com:5252'; //local url
 			var socket = null;
 			var messageEvent = new NetEvent(NetEvent.MESSAGE);
 
