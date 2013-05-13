@@ -150,8 +150,8 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 		        }
 	        };
 
-	        this.connect = function($groupName){
-				socket = new WebSocket(connectURL + '?group=' + $groupName, 'ingame-protocol');
+	        this.connect = function($groupName, $clientType){
+				socket = new WebSocket(connectURL + '?group=' + $groupName + '?type=' + $clientType, 'ingame-protocol');
 		        socket.addEventListener('open', handleSocketOpen);
 		        socket.addEventListener('close', handleSocketClose);
 		        socket.addEventListener('error', handleSocketError);

@@ -66,7 +66,6 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 			    TouchUtils.getRelCoords(this.inputEl, this.activeTouches[0], coords);
 			    this.gameState.primaryX = coords.x;
 			    this.gameState.primaryY = coords.y;
-			    L.log('X/Y: ' + this.gameState.primaryX + ',' + this.gameState.primaryY, '@touch');
 		    }
 
 
@@ -101,7 +100,6 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 			    TouchUtils.getRelCoords(this.inputEl, this.activeTouches[0], coords);
 			    this.gameState.primaryX = coords.x;
 			    this.gameState.primaryY = coords.y;
-			    L.log('X/Y: ' + this.gameState.primaryX + ',' + this.gameState.primaryY, '@touch');
 		    }
 	    };
 
