@@ -6,9 +6,9 @@
 define([
 'jac/events/EventDispatcher',
 'jac/utils/ObjUtils',
-'app/net/Client',
+'app/net/NetClient',
 'jac/logger/Logger'],
-function(EventDispatcher,ObjUtils, Client, L){
+function(EventDispatcher,ObjUtils, NetClient, L){
     return (function(){
         /**
          * Creates a Player object

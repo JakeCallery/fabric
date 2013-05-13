@@ -17,9 +17,10 @@ define([
 'jac/events/GlobalEventBus',
 'jac/utils/BrowserUtils',
 'app/inputClient/InputClient',
-'app/spectatorClient/SpectatorClient'],
+'app/spectatorClient/SpectatorClient',
+'app/BaseClient'],
 function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
-         GEB, BrowserUtils, InputClient, SpectatorClient){
+         GEB, BrowserUtils, InputClient, SpectatorClient, BaseClient){
     return (function(){
 	    L.addLogTarget(new ConsoleTarget());
 	    L.log('New Main!');
@@ -40,10 +41,10 @@ function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
 	    //Get client type
 		var urlParams = BrowserUtils.getURLParams(window);
 		if(urlParams.hasOwnProperty('clientType')){
-			if(urlParams.clientType === 'inputclient'){
+			if(urlParams.clientType === BaseClient.INPUT_TYPE){
 				//set up new input client
 				client = new InputClient(window, doc, window.navigator);
-			} else if(urlParams.clientType === 'spectatorclient'){
+			} else if(urlParams.clientType === BaseClient.SPECTATOR_TYPE){
 				//set up new spectator client
 				client = new SpectatorClient(window, doc, window.navigator);
 			} else {

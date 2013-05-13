@@ -12,8 +12,9 @@ define([
 'app/net/events/NetEvent',
 'jac/utils/EventUtils',
 'jac/logger/Logger',
-'app/net/NetManager'],
-function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils, L, NetManager){
+'app/net/NetManager',
+'app/BaseClient'],
+function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils, L, NetManager, BaseClient){
     return (function(){
         /**
          * Creates a Game object
@@ -57,8 +58,12 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 		    L.log('Game Update', '@gameUpdate');
 
-		    this.gameState.localPlayer.targetX = this.gameState.primaryX;
-		    this.gameState.localPlayer.targetY = this.gameState.primaryY;
+		    //TODO: Separate this out
+		    //this check is here because the spectator client will not have a 'local' player, they will all be remote
+		    if(this.gameState.localPlayer !== null){
+			    this.gameState.localPlayer.targetX = this.gameState.primaryX;
+			    this.gameState.localPlayer.targetY = this.gameState.primaryY;
+		    }
 
 			this.viewManager.render();
 
@@ -68,7 +73,10 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 	    Game.prototype.handleAddedClient = function($e){
 		    L.log('Game caught added client', '@game');
-		    this.makePlayer($e.data);
+		    if($e.data.type !== BaseClient.SPECTATOR_TYPE){
+			    this.makePlayer($e.data);
+		    }
+
 	    };
 
 	    Game.prototype.handleRemovedClient = function($e){

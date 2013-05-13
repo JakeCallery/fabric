@@ -9,10 +9,10 @@ define([
 'jac/utils/ObjUtils',
 'jac/events/GlobalEventBus',
 'jac/events/JacEvent',
-'app/net/Client',
+'app/net/NetClient',
 'app/net/events/NetEvent',
 'app/game/GameState'],
-function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState){
+function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameState){
     return (function(){
         /**
          * Creates a NetManager object
@@ -35,6 +35,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 	        var connectURL = 'ws://jachtml.com:5252'; //local url
 			var socket = null;
 			var messageEvent = new NetEvent(NetEvent.MESSAGE);
+			var msg = {};
 
 	        /** @type {GameState} */
 	        this.gameState = $gameState;
@@ -61,12 +62,12 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 	        var initialConnect = function($data){
 		        L.log('Caught Initial Connect');
 
-		        self.addLocalClient($data.clientId);
+		        self.addLocalClient($data.clientId, $data.clientType);
 
 		        //add clients
 		        for(var i = 0; i < $data.clients.length; i++){
-			        if($data.clients[i].id !== self.localClient.id){
-				        self.addRemoteClient($data.clients[i].id);
+			        if($data.clients[i].clientId !== self.localClient.id){
+				        self.addRemoteClient($data.clients[i].clientId, $data.clients[i].clientType);
 			        }
 		        }
 
@@ -111,28 +112,33 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, Client, NetEvent, GameState)
 	        this.update = function(){
 		        if(updateCount >= THROTTLE_COUNT){
 			        updateCount = -1;
-			        var msg = {};
-			        msg.senderId = gameState.localPlayer.id;
-			        msg.messageType = 'clientupdate';
-			        msg.dataType = 'utf8';
-			        msg.data = {};
-			        msg.data.targetX = this.gameState.localPlayer.targetX;
-			        msg.data.targetY = this.gameState.localPlayer.targetY;
-			        socket.send(JSON.stringify(msg));
+
+			        //TODO: Separate this out, maybe override this for the spectator client?
+			        //Check because spectator client does not have a local player, they are all remote players
+			        if(gameState.localPlayer !== null){
+				        msg.senderId = gameState.localPlayer.id;
+				        msg.messageType = 'clientupdate';
+				        msg.dataType = 'utf8';
+				        msg.data = {};
+				        msg.data.targetX = this.gameState.localPlayer.targetX;
+				        msg.data.targetY = this.gameState.localPlayer.targetY;
+				        socket.send(JSON.stringify(msg));
+			        }
+
 		        }
 
 		        updateCount++;
 
 	        };
 
-	        this.addLocalClient = function($clientId){
-		        var c = new Client($clientId, false);
+	        this.addLocalClient = function($clientId, $clientType){
+		        var c = new NetClient($clientId, false, $clientType);
 		        self.localClient = c;
 		        geb.dispatchEvent(new NetEvent(NetEvent.ADDED_CLIENT, c));
 	        };
 
-	        this.addRemoteClient = function($clientId){
-		        var c = new Client($clientId, true);
+	        this.addRemoteClient = function($clientId, $clientType){
+		        var c = new NetClient($clientId, true, $clientType);
 		        self.remoteClients.push(c);
 		        geb.dispatchEvent(new NetEvent(NetEvent.ADDED_CLIENT, c));
 		        L.log('notify of added client');

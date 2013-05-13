@@ -19,6 +19,10 @@ function(EventDispatcher,ObjUtils){
         //Inherit / Extend
         ObjUtils.inheritPrototype(BaseClient,EventDispatcher);
 
+	    BaseClient.SPECTATOR_TYPE = 'spectator';
+	    BaseClient.INPUT_TYPE = 'input';
+	    BaseClient.STATS_TYPE = 'stats';
+
 	    BaseClient.prototype.update = function(){
 		    //OVERRIDE ME
 	    };

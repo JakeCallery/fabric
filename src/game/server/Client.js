@@ -10,7 +10,7 @@ var Events = require('events');
 var UUID = require('node-uuid');
 module.exports = Client;
 
-function Client($connection, $globalConnectionIndex) {
+function Client($connection, $globalConnectionIndex, $type) {
 
 	//super
 	Events.EventEmitter.call(this);
@@ -26,6 +26,7 @@ function Client($connection, $globalConnectionIndex) {
 	this.connection = $connection;
 	this.group = null;
 	this.connectionIndex = $globalConnectionIndex;
+	this.type = $type;
 
 	var handleMessage = function($message){
 		self.emit('message', self, $message);

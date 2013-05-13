@@ -71,17 +71,30 @@ function GameServer($id){
 			console.log((new Date()) + ' Connection accepted.');
 
 			var groupId= '';
+			var clientType = '';
 
 			var reqURL = $request.resourceURL;
 			if(reqURL.query.hasOwnProperty('group')){
 				groupId = reqURL.query['group'];
 			}
 
+			if(reqURL.query.hasOwnProperty('type')){
+				clientType = reqURL.query['type'];
+			}
+
 			console.log('GroupID: ' + groupId);
+			console.log('Client Type: ' + clientType);
+
+			if(clientType === '' || (clientType !== 'input' && clientType !== 'spectator' && clientType !== 'stats')){
+				//reject, bad client
+				$request.reject();
+				console.log((new Date()) + ' Connection from origin ' + $request.origin + ' rejected.  Bad client type: ' + clientType);
+			}
+
 
 			//Keep track of client indexes
 			var connectionIndex = connections.push(conn) - 1;
-			var client = new Client(conn, connectionIndex);
+			var client = new Client(conn, connectionIndex, clientType);
 			client.addListener('close', handleConnClose);
 			client.addListener('message', handleClientMessage);
 
@@ -113,13 +126,14 @@ function GameServer($id){
 
 			var connectObj = {};
 			connectObj.clientId = client.id;
+			connectObj.clientType = client.type;
 			connectObj.clients = [];
 			for(var r = 0; r < group.clients.length; r++){
-				connectObj.clients.push({id:group.clients[r].id});
+				connectObj.clients.push({clientId:group.clients[r].id, clientType:group.clients[r].type});
 			}
 			console.log('Connect String: ' + connectObj);
 			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, connectObj));
-			group.sendToGroupFromClient(client, new Message(client.id, Message.CLIENT_CONNECT, {clientId:client.id}));
+			group.sendToGroupFromClient(client, new Message(client.id, Message.CLIENT_CONNECT, {clientId:client.id, clientType:client.type}));
 		}
 	};
 
