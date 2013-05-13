@@ -75,6 +75,7 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 	    ViewManager.prototype.handleDisconnected = function($e){
 		    L.log('VM Caught disconnect');
 		    this.window.cancelAnimationFrame(this.animationFrameId);
+		    //this.window.cancelAnimationFrame(this.statsAnimationFrameId);
 	    };
 
         //Return constructor
