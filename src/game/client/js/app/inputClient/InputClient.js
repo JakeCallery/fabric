@@ -10,13 +10,13 @@ define([
 'app/net/events/NetEvent',
 'jac/utils/EventUtils',
 'app/inputClient/InputManager',
-'app/ViewManager',
+'app/inputClient/InputViewManager',
 'app/net/NetManager',
 'app/game/Game',
 'jac/events/GlobalEventBus',
 'jac/logger/Logger'],
 function(BaseClient,ObjUtils, GameState, NetEvent,
-         EventUtils, InputManager, ViewManager, NetManager,
+         EventUtils, InputManager, InputViewManager, NetManager,
          Game, GEB, L){
     return (function(){
         /**
@@ -34,7 +34,7 @@ function(BaseClient,ObjUtils, GameState, NetEvent,
 
 	        var geb = new GEB();
 	        this.im = new InputManager($doc.getElementById('gameCanvas'),gameState);
-	        this.vm = new ViewManager($win, $doc, $nav, gameState);
+	        this.vm = new InputViewManager($win, $doc, $nav, gameState);
 	        this.nm = new NetManager(gameState);
 	        this.game = new Game(gameState, $win, this.vm, this.nm);
 

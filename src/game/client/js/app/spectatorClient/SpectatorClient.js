@@ -6,7 +6,7 @@
 define([
 'app/BaseClient',
 'jac/utils/ObjUtils',
-'app/ViewManager',
+'app/spectatorClient/SpectatorViewManager',
 'app/net/NetManager',
 'app/game/Game',
 'jac/events/GlobalEventBus',
@@ -14,7 +14,7 @@ define([
 'app/game/GameState',
 'app/net/events/NetEvent',
 'jac/logger/Logger'],
-function(BaseClient,ObjUtils, ViewManager, NetManager,
+function(BaseClient,ObjUtils, SpectatorViewManager, NetManager,
         Game, GEB, EventUtils, GameState, NetEvent, L){
     return (function(){
         /**
@@ -34,7 +34,7 @@ function(BaseClient,ObjUtils, ViewManager, NetManager,
 	        var nav = $nav;
 
 	        var geb = new GEB();
-	        this.vm = new ViewManager($win, $doc, $nav, gameState);
+	        this.vm = new SpectatorViewManager($win, $doc, $nav, gameState);
 	        this.nm = new NetManager(gameState);
 	        this.game = new Game(gameState, $win, this.vm, this.nm);
 

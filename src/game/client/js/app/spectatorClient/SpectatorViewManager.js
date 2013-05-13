@@ -13,9 +13,9 @@ function(ViewManager,ObjUtils){
          * @extends {ViewManager}
          * @constructor
          */
-        function SpectatorViewManager(){
+        function SpectatorViewManager($window, $doc, $navigator, $gameState){
             //super
-            ViewManager.call(this);
+            ViewManager.call(this, $window, $doc, $navigator, $gameState);
         }
         
         //Inherit / Extend

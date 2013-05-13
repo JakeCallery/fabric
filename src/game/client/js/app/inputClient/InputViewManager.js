@@ -13,9 +13,9 @@ function(ViewManager,ObjUtils){
          * @extends {ViewManager}
          * @constructor
          */
-        function InputViewManager(){
+        function InputViewManager($win, $doc, $nav, $gameState){
             //super
-            ViewManager.call(this);
+            ViewManager.call(this, $win, $doc, $nav, $gameState);
         }
         
         //Inherit / Extend
