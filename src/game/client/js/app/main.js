@@ -19,7 +19,7 @@ define([
 'app/inputClient/InputClient',
 'app/spectatorClient/SpectatorClient'],
 function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
-         GEB, BrowserUtils, InputClient){
+         GEB, BrowserUtils, InputClient, SpectatorClient){
     return (function(){
 	    L.addLogTarget(new ConsoleTarget());
 	    L.log('New Main!');
