@@ -34,8 +34,6 @@ function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
 	    L.isShowingUnTagged = true;
 	    L.isEnabled = true;
 
-	    var self = this;
-	    var geb = new GEB();
 	    var client = null;
 
 	    //Get client type
