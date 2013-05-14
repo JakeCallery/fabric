@@ -63,3 +63,7 @@ Client.prototype = Object.create(Events.EventEmitter.prototype, {
 		enumerable: false
 	}
 });
+
+Client.INPUT_TYPE = 'input';
+Client.SPECTATOR_TYPE = 'spectator';
+Client.STATS_TYPE = 'stats';

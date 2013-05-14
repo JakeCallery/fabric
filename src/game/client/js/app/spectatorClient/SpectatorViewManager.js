@@ -24,7 +24,6 @@ function(ViewManager,ObjUtils,L){
 
 	    SpectatorViewManager.prototype.render = function(){
 		    var self = this;
-		    L.log('VM Render', '@vmrender');
 
 		    //Clear //TODO: maybe use dirty rects, or some smarter clearing
 		    this.gameCtx.fillStyle = '#000000';

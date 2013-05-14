@@ -85,7 +85,7 @@ function GameServer($id){
 			console.log('GroupID: ' + groupId);
 			console.log('Client Type: ' + clientType);
 
-			if(clientType === '' || (clientType !== 'input' && clientType !== 'spectator' && clientType !== 'stats')){
+			if(clientType === '' || (clientType !== Client.INPUT_TYPE && clientType !== Client.SPECTATOR_TYPE && clientType !== Client.STATS_TYPE)){
 				//reject, bad client
 				$request.reject();
 				console.log((new Date()) + ' Connection from origin ' + $request.origin + ' rejected.  Bad client type: ' + clientType);

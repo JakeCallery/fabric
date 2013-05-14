@@ -18,9 +18,11 @@ define([
 'jac/utils/BrowserUtils',
 'app/inputClient/InputClient',
 'app/spectatorClient/SpectatorClient',
-'app/BaseClient'],
+'app/BaseClient',
+'app/statsClient/StatsClient'],
 function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
-         GEB, BrowserUtils, InputClient, SpectatorClient, BaseClient){
+         GEB, BrowserUtils, InputClient, SpectatorClient, BaseClient,
+		 StatsClient){
     return (function(){
 	    L.addLogTarget(new ConsoleTarget());
 	    L.log('New Main!');
@@ -45,6 +47,9 @@ function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
 			} else if(urlParams.clientType === BaseClient.SPECTATOR_TYPE){
 				//set up new spectator client
 				client = new SpectatorClient(window, doc, window.navigator);
+			} else if(urlParams.clientType === BaseClient.STATS_TYPE){
+				//set up new stats client
+				client = new StatsClient(window, doc, window.navigator);
 			} else {
 				//unsupported client
 				L.error('Unsupported client: ' + urlParams.clientType, true);
