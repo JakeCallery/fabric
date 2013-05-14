@@ -41,7 +41,7 @@ define([
 				this.vm = new StatsViewManager($win, $doc, $nav, gameState);
 				this.nm = new NetManager(gameState);
 
-				this.clientTable = $doc.getElementById('clientTable');
+				this.clientsTable = $doc.getElementById('clientsTable');
 
 				this.geb.addHandler(NetEvent.CONNECTED, EventUtils.bind(self, self.handleConnected));
 				this.geb.addHandler(NetEvent.ADDED_CLIENT, EventUtils.bind(self, self.handleAddedClient));
@@ -53,11 +53,29 @@ define([
 			ObjUtils.inheritPrototype(StatsClient,BaseClient);
 
 			StatsClient.prototype.handleAddedClient = function($e){
-				L.log('Stat client caught client added: ' + $e.data);
+				L.log('Stat client caught client added: ' + $e.data.id);
+				var rowCount = this.clientsTable.rows.length;
+				var row = this.clientsTable.insertRow(rowCount);
+				var c0 = row.insertCell(0);
+				c0.innerHTML = $e.data.id;
+				var c1 = row.insertCell(1);
+				c1.innerHTML = 'N/A';
+
 			};
 
 			StatsClient.prototype.handleRemovedClient = function($e){
 				L.log('Stat client caught client removed: ' + $e.data);
+
+				var row = null;
+
+				for(var i = 0; i < this.clientsTable.rows.length; i++){
+					if(this.clientsTable.rows[i].childNodes[0].innerHTML === $e.data.id){
+						//remove
+						this.clientsTable.deleteRow(i);
+						break;
+					}
+				}
+
 			};
 
 			StatsClient.prototype.connect = function($groupId){
