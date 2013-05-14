@@ -73,7 +73,7 @@ function(EventDispatcher,ObjUtils, GEB, GameState, Player, NetEvent, EventUtils,
 
 	    Game.prototype.handleAddedClient = function($e){
 		    L.log('Game caught added client', '@game');
-		    if($e.data.type !== BaseClient.SPECTATOR_TYPE){
+		    if($e.data.type === BaseClient.INPUT_TYPE){
 			    this.makePlayer($e.data);
 		    }
 
