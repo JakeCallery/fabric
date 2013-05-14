@@ -40,15 +40,6 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 	        this.statsAnimationFrameId = null;
 	        this.updateStatsDelegate = EventUtils.bind(self, self.updateStats);
 
-	        //View elements
-	        this.gameCanvas = this.doc.getElementById('gameCanvas');
-	        this.gameCtx = this.gameCanvas.getContext('2d');
-
-	        //Set up stats
-	        this.stats.setMode(0);
-	        this.doc.getElementById('statsDiv').appendChild(this.stats.domElement);
-			this.updateStats();
-
 			this.geb.addHandler(NetEvent.CONNECTED, EventUtils.bind(self, self.handleConnected));
 	        this.geb.addHandler(NetEvent.DISCONNECTED, EventUtils.bind(self, self.handleDisconnected));
 

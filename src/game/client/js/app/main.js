@@ -48,7 +48,8 @@ function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
 				//set up new spectator client
 				client = new SpectatorClient(window, doc, window.navigator);
 			} else if(urlParams.clientType === BaseClient.STATS_TYPE){
-				//set up new stats client
+				//set up new stats
+				L.log('Make New Stats Client');
 				client = new StatsClient(window, doc, window.navigator);
 			} else {
 				//unsupported client

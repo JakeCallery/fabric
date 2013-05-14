@@ -11,8 +11,9 @@ define([
 'jac/events/JacEvent',
 'app/net/NetClient',
 'app/net/events/NetEvent',
-'app/game/GameState'],
-function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameState){
+'app/game/GameState',
+'app/net/MessageTypes'],
+function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameState, MessageTypes){
     return (function(){
         /**
          * Creates a NetManager object
@@ -31,7 +32,8 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 
 	        var gameState = $gameState;
 	        var geb = new GEB();
-	        var connectURL = 'ws://jachtml.com:5252'; //local url
+	        var connectURL = 'ws://192.168.1.96:5252'; //local url (no dns)
+	        //var connectURL = 'ws://jachtml.com:5252'; //local url
 	        //var connectURL = 'ws://jac-fabric.nodejitsu.com:80'; //jitsu url
 			var socket = null;
 			var messageEvent = new NetEvent(NetEvent.MESSAGE);
@@ -100,7 +102,11 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 
 			        default:
 				        if(msg.senderId != 0){
-							gameState.allPlayersMap[msg.senderId].applyMessage(msg);
+					        //TODO: decide if gameState needs to be here or not
+					        if(gameState.allPlayersMap.hasOwnProperty(msg.senderId)){
+						        gameState.allPlayersMap[msg.senderId].applyMessage(msg);
+					        }
+
 				        } else {
 					        geb.dispatchEvent(new NetEvent(NetEvent.SERVER_MESSAGE, msg));
 				        }
@@ -128,6 +134,28 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 		        }
 
 		        updateCount++;
+
+	        };
+
+	        this.pingClient = function($clientId){
+		        this.sendMsgToClient($clientId, MessageTypes.PING, Date.now());
+	        };
+
+	        this.sendMsgToClient = function($targetClientId, $msgType, $data){
+		        msg.senderId = self.localClient.id;
+		        msg.recId = $targetClientId;
+		        msg.messageType = $msgType;
+		        msg.dataType = 'utf8';
+		        msg.data = {};
+
+		        //Copy data
+		        for(var prop in $data){
+			        if($data.hasOwnProperty(prop)){
+				        msg.data[prop] = $data[prop];
+			        }
+		        }
+
+				socket.send(JSON.stringify(msg));
 
 	        };
 

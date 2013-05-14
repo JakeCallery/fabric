@@ -25,6 +25,7 @@ define([
 			StatsViewManager.prototype.render = function(){
 				var self = this;
 
+				/*
 				//Clear //TODO: maybe use dirty rects, or some smarter clearing
 				this.gameCtx.fillStyle = '#000000';
 				this.gameCtx.fillRect(0,0,600,600);
@@ -41,6 +42,7 @@ define([
 					this.gameCtx.fillStyle = p.color;
 					this.gameCtx.fill();
 				}
+				*/
 			};
 
 			//Return constructor

@@ -17,6 +17,16 @@ function(ViewManager,ObjUtils,L){
         function InputViewManager($win, $doc, $nav, $gameState){
             //super
             ViewManager.call(this, $win, $doc, $nav, $gameState);
+
+	        //View elements
+	        this.gameCanvas = this.doc.getElementById('gameCanvas');
+	        this.gameCtx = this.gameCanvas.getContext('2d');
+
+	        //Set up stats
+	        this.stats.setMode(0);
+	        this.doc.getElementById('statsDiv').appendChild(this.stats.domElement);
+	        this.updateStats();
+
         }
         
         //Inherit / Extend

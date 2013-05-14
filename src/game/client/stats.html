@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+	<html lang='en'>
+		<head>
+			<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+				<title>Fabric Stats Client</title>
+
+				<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+					<link href="css/statsClient.css" rel="stylesheet"/>
+
+					<script>
+					var USE_COMPILED = false;
+					var require = {
+						baseUrl: './js',
+						paths: {
+						json2:'libs/json2',
+						stats:'libs/stats'
+						},
+					shim: {
+						json2: {
+						exports: 'JSON'
+						},
+					stats: {
+						exports: 'Stats'
+						}
+					}
+					}
+					</script>
+
+				</head>
+				<body>
+
+					<div id="statsDiv" class="statsDiv"></div>
+
+                    <table id="clientTable" class="clientTable">
+                        <tr>
+                            <th>Client ID</th>
+                            <th>Ping (ms)</th>
+                        </tr>
+                        <tr>
+                            <td>thing1</td>
+                            <td>thing2</td>
+                        </tr>
+                    </table>
+
+					<p>Stats Client</p>
+
+					<script type="text/javascript">
+					//Async load RequireJS
+					(function(){
+						var sel = document.createElement('script');
+						sel.type = 'text/javascript';
+						sel.async = true;
+						if(USE_COMPILED === false){
+						sel.setAttribute('data-main', 'app/main');
+						sel.src = 'js/libs/require.js';
+                    }
+					else {
+						sel.src = 'compiled/compiled.js';
+                    }
+
+					var firstTag = document.getElementsByTagName('script')[0];
+					firstTag.parentNode.insertBefore(sel,firstTag);
+					})();
+					</script>
+				</body>
+			</html>
