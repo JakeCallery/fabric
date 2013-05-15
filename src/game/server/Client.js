@@ -29,7 +29,10 @@ function Client($connection, $globalConnectionIndex, $type) {
 	this.type = $type;
 
 	var handleMessage = function($message){
-		self.emit('message', self, $message);
+		//TODO: possible support for binary data
+		var msg = JSON.parse($message.utf8Data);
+		self.emit('message', self, msg);
+		//self.emit('message', self, $message);
 	};
 
 	var handleClose = function($reasonCode, $description){
@@ -40,11 +43,14 @@ function Client($connection, $globalConnectionIndex, $type) {
 	this.connection.addListener('close', handleClose);
 	this.connection.addListener('message', handleMessage);
 
-	this.sendMessage = function($message){
-		if($message.type === 'utf8'){
-			self.connection.sendUTF($message.utf8Data);
-		} else if($message.type === 'binary'){
-			self.connection.sendBytes($message.binaryData);
+	//TODO: !IMPORTANT! remove one of the params, and simply generate the other
+	//this will require updating all .sendMessage calls
+	this.sendMessage = function($msgObj, $message){
+		//console.log('---' + $msgObj + ' / ' + $message);
+		if($msgObj.type === 'utf8'){
+			self.connection.sendUTF($message);
+		} else if($msgObj.type === 'binary'){
+			self.connection.sendBytes($msgObj.binaryData);
 		}
 	};
 

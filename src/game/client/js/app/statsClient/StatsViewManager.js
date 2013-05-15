@@ -4,10 +4,12 @@
  */
 
 define([
-	'app/ViewManager',
-	'jac/utils/ObjUtils',
-	'jac/logger/Logger'],
-	function(ViewManager,ObjUtils,L){
+'app/ViewManager',
+'jac/utils/ObjUtils',
+'jac/logger/Logger',
+'jac/utils/EventUtils',
+'jac/events/JacEvent'],
+	function(ViewManager,ObjUtils,L, EventUtils, JacEvent){
 		return (function(){
 			/**
 			 * Creates a StatsViewManager object
@@ -17,32 +19,47 @@ define([
 			function StatsViewManager($window, $doc, $navigator, $gameState){
 				//super
 				ViewManager.call(this, $window, $doc, $navigator, $gameState);
+
+				this.stopButton = $doc.getElementById('stopButton');
+				this.clientsTable = $doc.getElementById('clientsTable');
+
+				var self = this;
+				EventUtils.addDomListener(this.stopButton, 'click', EventUtils.bind(self, self.handleStopClick));
+
 			}
 
 			//Inherit / Extend
 			ObjUtils.inheritPrototype(StatsViewManager,ViewManager);
 
-			StatsViewManager.prototype.render = function(){
-				var self = this;
+			StatsViewManager.prototype.handleStopClick = function($e){
+				this.dispatchEvent(new JacEvent('stopupdate'));
+			};
 
-				/*
-				//Clear //TODO: maybe use dirty rects, or some smarter clearing
-				this.gameCtx.fillStyle = '#000000';
-				this.gameCtx.fillRect(0,0,600,600);
+			StatsViewManager.prototype.addClient = function($client){
+				var rowCount = this.clientsTable.rows.length;
+				var row = this.clientsTable.insertRow(rowCount);
+				var c0 = row.insertCell(0);
+				c0.innerHTML = $client.id;
+				var c1 = row.insertCell(1);
+				c1.innerHTML = 'N/A';
+			};
 
-				//TODO: optimize this loop, I'm sure it blows...
-				var p;
-				for(var id in this.gameState.allPlayersMap){
-					if(this.gameState.allPlayersMap.hasOwnProperty(id)){
-						p = this.gameState.allPlayersMap[id];
+			StatsViewManager.prototype.removeClient = function($client){
+				//Remove from view
+				for(var i = 0; i < this.clientsTable.rows.length; i++){
+					if(this.clientsTable.rows[i].childNodes[0].innerHTML === $client.id){
+						//remove
+						this.clientsTable.deleteRow(i);
+						break;
 					}
-
-					this.gameCtx.beginPath();
-					this.gameCtx.arc(p.targetX, p.targetY, 20,0,2*Math.PI, false);
-					this.gameCtx.fillStyle = p.color;
-					this.gameCtx.fill();
 				}
-				*/
+			};
+
+			StatsViewManager.prototype.updatePing = function($clientIndex, $pingTime){
+				this.clientsTable.rows[$clientIndex+1].cells[1].innerHTML = $pingTime;
+			};
+
+			StatsViewManager.prototype.render = function(){
 			};
 
 			//Return constructor

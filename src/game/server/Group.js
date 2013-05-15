@@ -50,19 +50,34 @@ function Group($id) {
 		}
 	};
 
-	this.sendToGroupFromClient = function($client, $message){
+	this.sendToClientFromClient = function($client, $msg){
+		var message = JSON.stringify($msg);
+
+		console.log('send to client from client');
+		//find client
+		for(var i = 0; i < this.clients.length; i++){
+			if(this.clients[i].id === $msg.recId){
+				console.log('Sending Meesage to: ' + this.clients[i].id);
+				this.clients[i].sendMessage($msg, message);
+			}
+		}
+	};
+
+	this.sendToGroupFromClient = function($client, $msg){
+		var message = JSON.stringify($msg);
 		for(var i = 0, l=this.clients.length; i < l; i++){
 			var c = this.clients[i];
 			if(c !== $client){
-				c.sendMessage($message);
+				c.sendMessage($msg, message);
 			}
 		}
 	};
 
 	this.sendToAll = function($message){
+		var msg = JSON.parse($message);
 		for(var i = 0, l = this.clients.length; i < l; i++){
 			var c = this.clients[i];
-			c.sendMessage($message);
+			c.sendMessage(msg, $message);
 		}
 	};
 }

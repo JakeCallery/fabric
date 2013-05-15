@@ -29,6 +29,7 @@ function(JacEvent,ObjUtils){
 	    /** @const */ NetEvent.ADDED_CLIENT = 'netAddedClientEvent';
 	    /** @const */ NetEvent.MESSAGE = 'netMessageEvent';
 	    /** @const */ NetEvent.SERVER_MESSAGE = 'netServerMessageEvent';
+	    /** @const */ NetEvent.STATS_MESSAGE = 'netStatsMessageEvent';
 
         //Return constructor
         return NetEvent;

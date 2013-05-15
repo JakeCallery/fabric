@@ -54,7 +54,7 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
         ObjUtils.inheritPrototype(InputManager,EventDispatcher);
 
 	    InputManager.prototype.handleTouchStart = function($e){
-		    L.log('Caught Touch Start: ' + $e.changedTouches.length + ' / ' + $e.changedTouches[0].identifier, '@touch');
+		    //L.log('Caught Touch Start: ' + $e.changedTouches.length + ' / ' + $e.changedTouches[0].identifier, '@touch');
 			$e.preventDefault();
 
 		    for(var i = 0, l = $e.changedTouches.length; i < l; i++){
@@ -72,7 +72,7 @@ function(EventDispatcher,ObjUtils, EventUtils, L, MouseUtils, TouchUtils){
 	    };
 
 	    InputManager.prototype.handleTouchEnd = function($e){
-		    L.log('Caught Touch End: ' + $e.changedTouches.length, '@touch');
+		    //L.log('Caught Touch End: ' + $e.changedTouches.length, '@touch');
 		    $e.preventDefault();
 		    var idx = -1;
 		    for(var i = 0, l = $e.changedTouches.length; i < l; i++){

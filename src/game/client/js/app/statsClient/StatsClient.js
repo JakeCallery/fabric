@@ -35,31 +35,93 @@ define([
 				var doc = $doc;
 				var nav = $nav;
 
+				this.timeoutId = -1;
+
 				this.clients = [];
 
 				this.geb = new GEB();
 				this.vm = new StatsViewManager($win, $doc, $nav, gameState);
 				this.nm = new NetManager(gameState);
 
-				this.clientsTable = $doc.getElementById('clientsTable');
-
 				this.geb.addHandler(NetEvent.CONNECTED, EventUtils.bind(self, self.handleConnected));
 				this.geb.addHandler(NetEvent.ADDED_CLIENT, EventUtils.bind(self, self.handleAddedClient));
 				this.geb.addHandler(NetEvent.REMOVED_CLIENT, EventUtils.bind(self, self.handleRemovedClient));
+
+				this.geb.addHandler(NetEvent.STATS_MESSAGE, EventUtils.bind(self, self.handleStatsMessage));
+
+				this.vm.addHandler('stopupdate', EventUtils.bind(self, self.stopUpdate));
+
+				//Start updating
+				this.update();
 
 			}
 
 			//Inherit / Extend
 			ObjUtils.inheritPrototype(StatsClient,BaseClient);
 
+			StatsClient.prototype.handleStatsMessage = function($e){
+				L.log('Caught Stats Message: ' + $e.data.messageType);
+				if($e.data.messageType === MessageTypes.PONG){
+					this.updateClientPong($e.data);
+				}
+			};
+
+			StatsClient.prototype.updateClientPong = function($msg){
+
+				//measure roundtrip
+				var time = Date.now();
+				var diff = time - $msg.data.timestamp;
+				console.log('Ping Time: ' + diff);
+
+				var idx = this.getClientIndexById($msg.senderId);
+				if(idx != -1){
+
+					var c = this.clients[idx];
+					if(c.statsData.numPings > 10){
+						c.statsData.numPings = 0;
+						c.statsData.pingTotal = 0;
+					}
+
+					//update ping stats
+					c.statsData.numPings++;
+					c.statsData.pingTotal += diff;
+					c.statsData.lastPing = diff;
+					var avg = Math.round(c.statsData.pingTotal / c.statsData.numPings);
+					this.vm.updatePing(idx,avg);
+
+				}
+			};
+
+			StatsClient.prototype.stopUpdate = function(){
+				L.log('Stopping Update');
+				clearTimeout(this.timeoutId);
+			};
+
+			StatsClient.prototype.update = function(){
+				var self = this;
+
+				for(var i = 0; i < this.clients.length; i++){
+					if(this.clients[i].id !== this.nm.localClient.id){
+						L.log('Sending Ping to: ' + this.clients[i].id);
+						this.nm.pingClient(this.clients[i].id);
+					}
+
+				}
+
+				this.timeoutId = setTimeout(EventUtils.bind(self, self.update), 1000);
+			};
+
 			StatsClient.prototype.handleAddedClient = function($e){
-				L.log('Stat client caught client added: ' + $e.data.id);
-				var rowCount = this.clientsTable.rows.length;
-				var row = this.clientsTable.insertRow(rowCount);
-				var c0 = row.insertCell(0);
-				c0.innerHTML = $e.data.id;
-				var c1 = row.insertCell(1);
-				c1.innerHTML = 'N/A';
+
+				var client = $e.data;
+				client.statsData.numPings = 0;
+				client.statsData.lastPing = 0;
+				client.statsData.pingTotal = 0;
+
+				L.log('Stat client caught client added: ' + client.id);
+				this.clients.push(client);
+
+				this.vm.addClient(client);
 
 			};
 
@@ -68,14 +130,24 @@ define([
 
 				var row = null;
 
-				for(var i = 0; i < this.clientsTable.rows.length; i++){
-					if(this.clientsTable.rows[i].childNodes[0].innerHTML === $e.data.id){
-						//remove
-						this.clientsTable.deleteRow(i);
-						break;
+				this.vm.removeClient($e.data);
+
+				//remove from list
+				var idx = this.getClientIndexById($e.data.id);
+				if(idx !== -1){
+					this.clients.splice(idx,1);
+				}
+
+			};
+
+			StatsClient.prototype.getClientIndexById = function($clientId){
+				for(var i = 0; i < this.clients.length; i++){
+					if(this.clients[i].id === $clientId){
+						return i;
 					}
 				}
 
+				return -1;
 			};
 
 			StatsClient.prototype.connect = function($groupId){

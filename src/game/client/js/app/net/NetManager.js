@@ -32,12 +32,14 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 
 	        var gameState = $gameState;
 	        var geb = new GEB();
-	        var connectURL = 'ws://192.168.1.96:5252'; //local url (no dns)
-	        //var connectURL = 'ws://jachtml.com:5252'; //local url
+	        //var connectURL = 'ws://192.168.1.96:5252'; //local url (no dns)
+	        var connectURL = 'ws://jachtml.com:5252'; //local url
 	        //var connectURL = 'ws://jac-fabric.nodejitsu.com:80'; //jitsu url
 			var socket = null;
 			var messageEvent = new NetEvent(NetEvent.MESSAGE);
-			var msg = {};
+
+	        //TODO: pool message objects
+	        var msg = {};
 
 	        /** @type {GameState} */
 	        this.gameState = $gameState;
@@ -100,6 +102,16 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 				        L.log('Num Remotes: ' + self.remoteClients.length);
 				        break;
 
+			        case 'ping':
+				        L.log('Caught Ping...');
+				        self.sendPong(msg);
+				        break;
+
+			        case 'pong':
+				        L.log('Caught Pong...');
+				        geb.dispatchEvent(new NetEvent(NetEvent.STATS_MESSAGE, msg));
+				        break;
+
 			        default:
 				        if(msg.senderId != 0){
 					        //TODO: decide if gameState needs to be here or not
@@ -122,9 +134,10 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 			        //TODO: Separate this out, maybe override this for the spectator client?
 			        //Check because spectator client does not have a local player, they are all remote players
 			        if(gameState.localPlayer !== null){
+				        msg = {};
 				        msg.senderId = gameState.localPlayer.id;
 				        msg.messageType = 'clientupdate';
-				        msg.dataType = 'utf8';
+				        msg.type = 'utf8';
 				        msg.data = {};
 				        msg.data.targetX = this.gameState.localPlayer.targetX;
 				        msg.data.targetY = this.gameState.localPlayer.targetY;
@@ -137,15 +150,20 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 
 	        };
 
+	        this.sendPong = function($msg){
+		        this.sendMsgToClient($msg.senderId, MessageTypes.PONG, $msg.data);
+	        };
+
 	        this.pingClient = function($clientId){
-		        this.sendMsgToClient($clientId, MessageTypes.PING, Date.now());
+		        this.sendMsgToClient($clientId, MessageTypes.PING, {timestamp:Date.now()});
 	        };
 
 	        this.sendMsgToClient = function($targetClientId, $msgType, $data){
+		        msg = {};
 		        msg.senderId = self.localClient.id;
 		        msg.recId = $targetClientId;
 		        msg.messageType = $msgType;
-		        msg.dataType = 'utf8';
+		        msg.type = 'utf8';
 		        msg.data = {};
 
 		        //Copy data

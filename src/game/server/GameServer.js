@@ -132,7 +132,8 @@ function GameServer($id){
 				connectObj.clients.push({clientId:group.clients[r].id, clientType:group.clients[r].type});
 			}
 			console.log('Connect String: ' + connectObj);
-			client.sendMessage(new Message(SERVER_ID, Message.CONNECT, connectObj));
+			var msg = new Message(SERVER_ID, Message.CONNECT, connectObj)
+			client.sendMessage(msg, JSON.stringify(msg));
 			group.sendToGroupFromClient(client, new Message(client.id, Message.CLIENT_CONNECT, {clientId:client.id, clientType:client.type}));
 		}
 	};
@@ -155,10 +156,17 @@ function GameServer($id){
 		$group.removeListener('empty', handleEmptyGroup);
 	};
 
-	var handleClientMessage = function($client, $message){
-		//for now echo to all clients in group
+	var handleClientMessage = function($client, $msg){
 		var grp = $client.group;
-		grp.sendToGroupFromClient($client, $message);
+		if($msg.hasOwnProperty('recId')){
+			//send to specific client
+			console.log('ClientMessage: ' + $client.id + ' / ' + $msg.data);
+			grp.sendToClientFromClient($client, $msg);
+		} else {
+			//for now echo to all clients in group
+			grp.sendToGroupFromClient($client, $msg);
+		}
+
 	};
 
 	var checkOriginAllowed = function($origin){
