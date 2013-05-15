@@ -49,11 +49,33 @@ function(doc, L, ConsoleTarget, JSON, RequestAnimationFrame,
 				client = new SpectatorClient(window, doc, window.navigator);
 			} else if(urlParams.clientType === BaseClient.STATS_TYPE){
 				//set up new stats
-				L.log('Make New Stats Client');
 				client = new StatsClient(window, doc, window.navigator);
 			} else {
 				//unsupported client
 				L.error('Unsupported client: ' + urlParams.clientType, true);
+			}
+		} else {
+			//use global (CLIENT_TYPE defined in .html
+			if(CLIENT_TYPE !== undefined && CLIENT_TYPE !== null && CLIENT_TYPE !== ''){
+				switch(CLIENT_TYPE){
+					case BaseClient.INPUT_TYPE:
+						client = new InputClient(window, doc, window.navigator);
+						break;
+
+					case BaseClient.SPECTATOR_TYPE:
+						client = new SpectatorClient(window, doc, window.navigator);
+						break;
+
+					case BaseClient.STATS_TYPE:
+						client = new StatsClient(window, doc, window.navigator);
+						break;
+
+					default:
+						L.error('Unsupported client: ' + CLIENT_TYPE);
+						break;
+				}
+			} else {
+				L.error('No client type specified', true);
 			}
 		}
 

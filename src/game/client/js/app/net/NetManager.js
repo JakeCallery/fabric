@@ -90,7 +90,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 
 			        case 'clientconnect':
 				        L.log('Caught New Remote Client: ' + msg.senderId);
-						self.addRemoteClient(msg.senderId);
+						self.addRemoteClient(msg.data.clientId, msg.data.clientType);
 				        L.log('Num Remotes: ' + self.remoteClients.length);
 				        break;
 
