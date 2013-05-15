@@ -38,6 +38,12 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 			var socket = null;
 			var messageEvent = new NetEvent(NetEvent.MESSAGE);
 
+	        //Stats
+	        this.totalSentMessages = 0;
+	        this.totalRecMessages = 0;
+	        this.sentMessagesPerSec = 0;
+	        this.recMessagesPerSec = 0;
+
 	        //TODO: pool message objects
 	        var msg = {};
 
@@ -102,13 +108,24 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 				        L.log('Num Remotes: ' + self.remoteClients.length);
 				        break;
 
-			        case 'ping':
+			        case MessageTypes.PING:
 				        L.log('Caught Ping...');
 				        self.sendPong(msg);
 				        break;
 
-			        case 'pong':
+			        case MessageTypes.PONG:
 				        L.log('Caught Pong...');
+				        geb.dispatchEvent(new NetEvent(NetEvent.STATS_MESSAGE, msg));
+				        break;
+
+			        case MessageTypes.GET_STATS:
+				        L.log('Caught get stats..');
+				        //geb.dispatchEvent(new NetEvent(NetEvent.STATS_MESSAGE, msg));
+				        self.sendStats(msg);
+				        break;
+
+			        case MessageTypes.NEW_STATS:
+				        L.log('Caught new stats..');
 				        geb.dispatchEvent(new NetEvent(NetEvent.STATS_MESSAGE, msg));
 				        break;
 
@@ -156,6 +173,17 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 
 	        this.pingClient = function($clientId){
 		        this.sendMsgToClient($clientId, MessageTypes.PING, {timestamp:Date.now()});
+	        };
+
+	        this.sendStats = function($msg){
+				var data = {};
+		        //add total messages sent, total messages received, send rate, rec rate
+		        //TODO: NEXT CALCULATE STATS (probably not in this function)
+		        data.totalSent = this.totalSentMessages;
+		        data.totalRec = this.totalRecMessages;
+		        data.sendRate = this.sentMessagesPerSec;
+		        data.recRate = this.recMessagesPerSec;
+		        this.sendMsgToClient($msg.senderId, MessageTypes.NEW_STATS, data);
 	        };
 
 	        this.sendMsgToClient = function($targetClientId, $msgType, $data){

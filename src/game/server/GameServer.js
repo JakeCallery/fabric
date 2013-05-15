@@ -184,8 +184,6 @@ function GameServer($id){
 		console.log((new Date() + ' Server is listening on port ' + port));
 	};
 
-
-
 }
 
 GameServer.super_ = Events.EventEmitter;

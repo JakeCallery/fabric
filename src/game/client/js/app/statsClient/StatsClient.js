@@ -61,8 +61,15 @@ define([
 
 			StatsClient.prototype.handleStatsMessage = function($e){
 				L.log('Caught Stats Message: ' + $e.data.messageType);
-				if($e.data.messageType === MessageTypes.PONG){
-					this.updateClientPong($e.data);
+				var msg = $e.data;
+				switch(msg.messageType){
+					case MessageTypes.PONG:
+						this.updateClientPong(msg);
+						break;
+
+					case MessageTypes.NEW_STATS:
+						this.updateNewStats(msg);
+						break;
 				}
 			};
 
