@@ -36,26 +36,27 @@ define([
 				var row = this.clientsTable.rows[$clientIndex+1];
 
 				//client id [0] (not updated here)
-				//ping [1] (not updated here, maybe it should be?)
+				//client type[1] (not updated here)
+				//ping [2] (not updated here, maybe it should be?)
 
-				//Num Messages sent [2]
-				row.childNodes[2].innerHTML = $statsData.totalSent;
+				//Num Messages sent [3]
+				row.childNodes[3].innerHTML = $statsData.totalSent;
 
-				//Num Messages received [3]
-				row.childNodes[3].innerHTML = $statsData.totalRec;
+				//Num Messages received [4]
+				row.childNodes[4].innerHTML = $statsData.totalRec;
 
-				//Send Rate per sec [4]
+				//Send Rate per sec [5]
 				if($statsData.sendRate > 0){
-					row.childNodes[4].innerHTML = Math.round($statsData.sendRate);
-				} else {
-					row.childNodes[4].innerHTML = '< 1';
-				}
-
-				//Receive rate per sec [5]
-				if($statsData.recRate > 0){
-					row.childNodes[5].innerHTML = Math.round($statsData.recRate);
+					row.childNodes[5].innerHTML = Math.round($statsData.sendRate);
 				} else {
 					row.childNodes[5].innerHTML = '< 1';
+				}
+
+				//Receive rate per sec [6]
+				if($statsData.recRate > 0){
+					row.childNodes[6].innerHTML = Math.round($statsData.recRate);
+				} else {
+					row.childNodes[6].innerHTML = '< 1';
 				}
 
 
@@ -74,24 +75,28 @@ define([
 				cell = row.insertCell(0);
 				cell.innerHTML = $client.id;
 
+				//Client Type
+				cell = row.insertCell(row.children.length);
+				cell.innerHTML = $client.type;
+
 				//Ping
-				cell = row.insertCell(1);
+				cell = row.insertCell(row.children.length);
 				cell.innerHTML = 'N/A';
 
 				//Total Sent
-				cell = row.insertCell(2);
+				cell = row.insertCell(row.children.length);
 				cell.innerHTML = 'N/A';
 
 				//Total Rec
-				cell = row.insertCell(3);
+				cell = row.insertCell(row.children.length);
 				cell.innerHTML = 'N/A';
 
 				//Send Rate
-				cell = row.insertCell(4);
+				cell = row.insertCell(row.children.length);
 				cell.innerHTML = 'N/A';
 
 				//Receive Rate
-				cell = row.insertCell(5);
+				cell = row.insertCell(row.children.length);
 				cell.innerHTML = 'N/A';
 
 			};
@@ -108,7 +113,7 @@ define([
 			};
 
 			StatsViewManager.prototype.updatePing = function($clientIndex, $pingTime){
-				this.clientsTable.rows[$clientIndex+1].cells[1].innerHTML = $pingTime;
+				this.clientsTable.rows[$clientIndex+1].cells[2].innerHTML = $pingTime;
 			};
 
 			StatsViewManager.prototype.render = function(){
