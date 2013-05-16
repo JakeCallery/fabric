@@ -32,8 +32,6 @@ define([
 			ObjUtils.inheritPrototype(StatsViewManager,ViewManager);
 
 			StatsViewManager.prototype.updateStatsForClient = function($clientIndex, $statsData){
-				L.log('Stats: ' + $clientIndex + ' / ' + $statsData.totalSent);
-				//TODO: START HERE!
 				//update the cells in the table to show the various stats
 				var row = this.clientsTable.rows[$clientIndex+1];
 
@@ -47,10 +45,19 @@ define([
 				row.childNodes[3].innerHTML = $statsData.totalRec;
 
 				//Send Rate per sec [4]
-				row.childNodes[4].innerHTML = $statsData.sendRate;
+				if($statsData.sendRate > 0){
+					row.childNodes[4].innerHTML = Math.round($statsData.sendRate);
+				} else {
+					row.childNodes[4].innerHTML = '< 1';
+				}
 
 				//Receive rate per sec [5]
-				row.childNodes[5].innerHTML = $statsData.recRate;
+				if($statsData.recRate > 0){
+					row.childNodes[5].innerHTML = Math.round($statsData.recRate);
+				} else {
+					row.childNodes[5].innerHTML = '< 1';
+				}
+
 
 			};
 

@@ -97,7 +97,6 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 	        };
 
 	        var updateStats = function(){
-		        L.log('update stats');
 		        if(self.lastStatUpdateTime !== 0){
 			        var now = Date.now();
 			        var timeDiff = now - self.lastStatUpdateTime;
@@ -113,11 +112,9 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 				        var recDiff = self.totalRecMessages - self.lastRecRateMessageCount;
 				        self.recMessagesPerSec = recDiff / timeDiffInSec;
 			        }
-
-		        } else {
-			        self.lastStatUpdateTime = Date.now()
 		        }
 
+		        self.lastStatUpdateTime = Date.now();
 		        self.lastSendRateMessageCount = self.totalSentMessages;
 		        self.lastRecRateMessageCount = self.totalRecMessages;
 		        self.statUpdateTimeoutId = setTimeout(updateStats, 1000);
@@ -125,6 +122,8 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 	        };
 
 	        var handleSocketMessage = function($e){
+		        self.totalRecMessages++;
+
 		        var msg = JSON.parse($e.data);
 		        var data = msg.data;
 
@@ -148,23 +147,23 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 				        break;
 
 			        case MessageTypes.PING:
-				        L.log('Caught Ping...');
+				        L.log('Caught Ping...', '@stats');
 				        self.sendPong(msg);
 				        break;
 
 			        case MessageTypes.PONG:
-				        L.log('Caught Pong...');
+				        L.log('Caught Pong...', '@stats');
 				        geb.dispatchEvent(new NetEvent(NetEvent.STATS_MESSAGE, msg));
 				        break;
 
 			        case MessageTypes.GET_STATS:
-				        L.log('Caught get stats..');
+				        L.log('Caught get stats..', '@stats');
 				        //geb.dispatchEvent(new NetEvent(NetEvent.STATS_MESSAGE, msg));
 				        self.sendStats(msg);
 				        break;
 
 			        case MessageTypes.NEW_STATS:
-				        L.log('Caught new stats..');
+				        L.log('Caught new stats..', '@stats');
 				        geb.dispatchEvent(new NetEvent(NetEvent.STATS_MESSAGE, msg));
 				        break;
 
@@ -180,9 +179,6 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 				        }
 				        break;
 		        }
-
-		        self.totalRecMessages++;
-
 	        };
 
 	        this.update = function(){
@@ -228,7 +224,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 	        };
 
 	        this.getStatsFromClient = function($clientId){
-		        L.log('Request Stats From Client');
+		        L.log('Request Stats From Client', '@stats');
 		        this.sendMsgToClient($clientId, MessageTypes.GET_STATS, {});
 	        };
 

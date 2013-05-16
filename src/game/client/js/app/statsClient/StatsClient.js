@@ -60,7 +60,7 @@ define([
 			ObjUtils.inheritPrototype(StatsClient,BaseClient);
 
 			StatsClient.prototype.handleStatsMessage = function($e){
-				L.log('Caught Stats Message: ' + $e.data.messageType);
+				L.log('Caught Stats Message: ' + $e.data.messageType, '@stats');
 				var msg = $e.data;
 				switch(msg.messageType){
 					case MessageTypes.PONG:
@@ -68,7 +68,7 @@ define([
 						break;
 
 					case MessageTypes.NEW_STATS:
-						L.log('Caught New Stats in client');
+						L.log('Caught New Stats in client', '@stats');
 						this.updateNewStats(msg);
 						break;
 				}
@@ -86,7 +86,6 @@ define([
 				//measure roundtrip
 				var time = Date.now();
 				var diff = time - $msg.data.timestamp;
-				console.log('Ping Time: ' + diff);
 
 				var idx = this.getClientIndexById($msg.senderId);
 				if(idx != -1){
