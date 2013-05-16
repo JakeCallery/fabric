@@ -75,7 +75,10 @@ define([
 			};
 
 			StatsClient.prototype.updateNewStats = function($msg){
-				this.vm.updateStatsForClient($msg.senderId, $msg.data);
+				var idx = this.getClientIndexById($msg.senderId);
+				if(idx !== -1){
+					this.vm.updateStatsForClient(idx, $msg.data);
+				}
 			};
 
 			StatsClient.prototype.updateClientPong = function($msg){

@@ -29,7 +29,7 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 
 	        var self = this;
 	        this.window = $window;
-	        this.doc = $doc;
+	        /** @type {document} */this.doc = $doc;
 	        this.nav = $navigator;
 	        this.gameState = $gameState;
 
@@ -61,6 +61,8 @@ function(EventDispatcher,ObjUtils,GEB,NetEvent, EventUtils, GameState, L, Stats)
 
 	    ViewManager.prototype.handleConnected = function($e){
 		    L.log('VM Caught connect');
+		    var clientPEl = this.doc.getElementById('clientNameP');
+		    clientPEl.innerHTML = ('Client: ' + $e.data.id);
 	    };
 
 	    ViewManager.prototype.handleDisconnected = function($e){

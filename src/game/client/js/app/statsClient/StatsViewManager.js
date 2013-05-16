@@ -31,10 +31,27 @@ define([
 			//Inherit / Extend
 			ObjUtils.inheritPrototype(StatsViewManager,ViewManager);
 
-			StatsViewManager.prototype.updateStatsForClient = function($clientId, $statsData){
-				L.log('Stats: ' + $clientId + ' / ' + $statsData.totalSent);
+			StatsViewManager.prototype.updateStatsForClient = function($clientIndex, $statsData){
+				L.log('Stats: ' + $clientIndex + ' / ' + $statsData.totalSent);
 				//TODO: START HERE!
 				//update the cells in the table to show the various stats
+				var row = this.clientsTable.rows[$clientIndex+1];
+
+				//client id [0] (not updated here)
+				//ping [1] (not updated here, maybe it should be?)
+
+				//Num Messages sent [2]
+				row.childNodes[2].innerHTML = $statsData.totalSent;
+
+				//Num Messages received [3]
+				row.childNodes[3].innerHTML = $statsData.totalRec;
+
+				//Send Rate per sec [4]
+				row.childNodes[4].innerHTML = $statsData.sendRate;
+
+				//Receive rate per sec [5]
+				row.childNodes[5].innerHTML = $statsData.recRate;
+
 			};
 
 			StatsViewManager.prototype.handleStopClick = function($e){
@@ -44,10 +61,32 @@ define([
 			StatsViewManager.prototype.addClient = function($client){
 				var rowCount = this.clientsTable.rows.length;
 				var row = this.clientsTable.insertRow(rowCount);
-				var c0 = row.insertCell(0);
-				c0.innerHTML = $client.id;
-				var c1 = row.insertCell(1);
-				c1.innerHTML = 'N/A';
+				var cell;
+
+				//Client ID
+				cell = row.insertCell(0);
+				cell.innerHTML = $client.id;
+
+				//Ping
+				cell = row.insertCell(1);
+				cell.innerHTML = 'N/A';
+
+				//Total Sent
+				cell = row.insertCell(2);
+				cell.innerHTML = 'N/A';
+
+				//Total Rec
+				cell = row.insertCell(3);
+				cell.innerHTML = 'N/A';
+
+				//Send Rate
+				cell = row.insertCell(4);
+				cell.innerHTML = 'N/A';
+
+				//Receive Rate
+				cell = row.insertCell(5);
+				cell.innerHTML = 'N/A';
+
 			};
 
 			StatsViewManager.prototype.removeClient = function($client){

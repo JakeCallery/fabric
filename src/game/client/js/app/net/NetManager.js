@@ -132,7 +132,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 			        case 'connect':
 				        initialConnect(data);
 				        L.log('ID: ' + self.localClient.id);
-				        geb.dispatchEvent(new NetEvent(NetEvent.CONNECTED));
+				        geb.dispatchEvent(new NetEvent(NetEvent.CONNECTED, self.localClient));
 				        break;
 
 			        case 'clientconnect':
@@ -220,7 +220,6 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 	        this.sendStats = function($msg){
 				var data = {};
 		        //add total messages sent, total messages received, send rate, rec rate
-		        //TODO: eNEXT CALCULATE STATS (probably not in this function)
 		        data.totalSent = this.totalSentMessages;
 		        data.totalRec = this.totalRecMessages;
 		        data.sendRate = this.sentMessagesPerSec;
