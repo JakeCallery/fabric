@@ -68,9 +68,14 @@ define([
 						break;
 
 					case MessageTypes.NEW_STATS:
+						L.log('Caught New Stats in client');
 						this.updateNewStats(msg);
 						break;
 				}
+			};
+
+			StatsClient.prototype.updateNewStats = function($msg){
+				this.vm.updateStatsForClient($msg.senderId, $msg.data);
 			};
 
 			StatsClient.prototype.updateClientPong = function($msg){
@@ -109,13 +114,14 @@ define([
 
 				for(var i = 0; i < this.clients.length; i++){
 					if(this.clients[i].id !== this.nm.localClient.id){
-						L.log('Sending Ping to: ' + this.clients[i].id);
+						//L.log('Sending Ping to: ' + this.clients[i].id);
 						this.nm.pingClient(this.clients[i].id);
+						this.nm.getStatsFromClient(this.clients[i].id);
 					}
 
 				}
 
-				this.timeoutId = setTimeout(EventUtils.bind(self, self.update), 1000);
+				this.timeoutId = setTimeout(EventUtils.bind(self, self.update), 3000);
 			};
 
 			StatsClient.prototype.handleAddedClient = function($e){

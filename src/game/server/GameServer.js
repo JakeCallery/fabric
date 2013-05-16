@@ -160,7 +160,7 @@ function GameServer($id){
 		var grp = $client.group;
 		if($msg.hasOwnProperty('recId')){
 			//send to specific client
-			console.log('ClientMessage: ' + $client.id + ' / ' + $msg.data);
+			//console.log('ClientMessage: ' + $client.id + ' / ' + $msg.data);
 			grp.sendToClientFromClient($client, $msg);
 		} else {
 			//for now echo to all clients in group

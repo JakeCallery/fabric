@@ -31,6 +31,12 @@ define([
 			//Inherit / Extend
 			ObjUtils.inheritPrototype(StatsViewManager,ViewManager);
 
+			StatsViewManager.prototype.updateStatsForClient = function($clientId, $statsData){
+				L.log('Stats: ' + $clientId + ' / ' + $statsData.totalSent);
+				//TODO: START HERE!
+				//update the cells in the table to show the various stats
+			};
+
 			StatsViewManager.prototype.handleStopClick = function($e){
 				this.dispatchEvent(new JacEvent('stopupdate'));
 			};

@@ -12,8 +12,9 @@ define([
 'app/net/NetClient',
 'app/net/events/NetEvent',
 'app/game/GameState',
-'app/net/MessageTypes'],
-function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameState, MessageTypes){
+'app/net/MessageTypes',
+'jac/utils/EventUtils'],
+function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameState, MessageTypes, EventUtils){
     return (function(){
         /**
          * Creates a NetManager object
@@ -43,6 +44,12 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 	        this.totalRecMessages = 0;
 	        this.sentMessagesPerSec = 0;
 	        this.recMessagesPerSec = 0;
+			this.lastSendRateMessageCount = 0;
+	        this.lastRecRateMessageCount = 0;
+			this.statUpdateTimeoutId = -1;
+			this.lastStatUpdateTime = 0;
+
+	        var updateStatsDelegate = EventUtils.bind(self, updateStats);
 
 	        //TODO: pool message objects
 	        var msg = {};
@@ -82,6 +89,38 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 		        }
 
 		        L.log('Num Remotes: ' + self.remoteClients.length);
+
+		        //Start tracking message rates
+		        updateStats();
+
+
+	        };
+
+	        var updateStats = function(){
+		        L.log('update stats');
+		        if(self.lastStatUpdateTime !== 0){
+			        var now = Date.now();
+			        var timeDiff = now - self.lastStatUpdateTime;
+			        var timeDiffInSec = timeDiff/1000;
+
+			        if(self.lastSendRateMessageCount !== 0){
+						var sendDiff = self.totalSentMessages - self.lastSendRateMessageCount;
+				        self.sentMessagesPerSec = sendDiff / timeDiffInSec;
+
+			        }
+
+			        if(self.lastRecRateMessageCount !== 0){
+				        var recDiff = self.totalRecMessages - self.lastRecRateMessageCount;
+				        self.recMessagesPerSec = recDiff / timeDiffInSec;
+			        }
+
+		        } else {
+			        self.lastStatUpdateTime = Date.now()
+		        }
+
+		        self.lastSendRateMessageCount = self.totalSentMessages;
+		        self.lastRecRateMessageCount = self.totalRecMessages;
+		        self.statUpdateTimeoutId = setTimeout(updateStats, 1000);
 
 	        };
 
@@ -142,6 +181,8 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 				        break;
 		        }
 
+		        self.totalRecMessages++;
+
 	        };
 
 	        this.update = function(){
@@ -159,6 +200,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 				        msg.data.targetX = this.gameState.localPlayer.targetX;
 				        msg.data.targetY = this.gameState.localPlayer.targetY;
 				        socket.send(JSON.stringify(msg));
+				        this.totalSentMessages++;
 			        }
 
 		        }
@@ -178,12 +220,17 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 	        this.sendStats = function($msg){
 				var data = {};
 		        //add total messages sent, total messages received, send rate, rec rate
-		        //TODO: NEXT CALCULATE STATS (probably not in this function)
+		        //TODO: eNEXT CALCULATE STATS (probably not in this function)
 		        data.totalSent = this.totalSentMessages;
 		        data.totalRec = this.totalRecMessages;
 		        data.sendRate = this.sentMessagesPerSec;
 		        data.recRate = this.recMessagesPerSec;
 		        this.sendMsgToClient($msg.senderId, MessageTypes.NEW_STATS, data);
+	        };
+
+	        this.getStatsFromClient = function($clientId){
+		        L.log('Request Stats From Client');
+		        this.sendMsgToClient($clientId, MessageTypes.GET_STATS, {});
 	        };
 
 	        this.sendMsgToClient = function($targetClientId, $msgType, $data){
@@ -202,6 +249,7 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 		        }
 
 				socket.send(JSON.stringify(msg));
+		        this.totalSentMessages++;
 
 	        };
 

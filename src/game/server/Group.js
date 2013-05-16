@@ -53,11 +53,11 @@ function Group($id) {
 	this.sendToClientFromClient = function($client, $msg){
 		var message = JSON.stringify($msg);
 
-		console.log('send to client from client');
+		//console.log('send to client from client');
 		//find client
 		for(var i = 0; i < this.clients.length; i++){
 			if(this.clients[i].id === $msg.recId){
-				console.log('Sending Meesage to: ' + this.clients[i].id);
+				//console.log('Sending Meesage to: ' + this.clients[i].id);
 				this.clients[i].sendMessage($msg, message);
 			}
 		}
