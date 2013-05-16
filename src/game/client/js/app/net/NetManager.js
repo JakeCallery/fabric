@@ -34,8 +34,8 @@ function(L, EventDispatcher,ObjUtils,GEB, JacEvent, NetClient, NetEvent, GameSta
 	        var gameState = $gameState;
 	        var geb = new GEB();
 	        //var connectURL = 'ws://192.168.1.96:5252'; //local url (no dns)
-	        //var connectURL = 'ws://jachtml.com:5252'; //local url
-	        var connectURL = 'ws://jac-fabric.nodejitsu.com:80'; //jitsu url
+	        var connectURL = 'ws://jachtml.com:5252'; //local url
+	        //var connectURL = 'ws://jac-fabric.nodejitsu.com:80'; //jitsu url
 			var socket = null;
 			var messageEvent = new NetEvent(NetEvent.MESSAGE);
 
