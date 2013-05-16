@@ -91,7 +91,7 @@ define([
 				if(idx != -1){
 
 					var c = this.clients[idx];
-					if(c.statsData.numPings > 3){
+					if(c.statsData.numPings > 1){
 						c.statsData.numPings = 0;
 						c.statsData.pingTotal = 0;
 					}
@@ -118,7 +118,7 @@ define([
 					if(this.clients[i].id !== this.nm.localClient.id){
 						//L.log('Sending Ping to: ' + this.clients[i].id);
 						this.nm.pingClient(this.clients[i].id);
-						//this.nm.getStatsFromClient(this.clients[i].id);
+						this.nm.getStatsFromClient(this.clients[i].id);
 					}
 
 				}
