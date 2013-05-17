@@ -11,5 +11,9 @@ process.title = 'FabricGameServer';
 var GameServer = require('./GameServer.js');
 
 var gs = new GameServer('gameserver1');
-gs.start(5252); //local server
+
+var port = process.env.PORT || 5252;
+
+gs.start(port);
+//gs.start(5252); //local server
 //gs.start(80); //set for jitsu only

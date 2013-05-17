@@ -57,7 +57,7 @@ function GameServer($id){
 	};
 
 	var handleWSRequest = function($request){
-
+		console.log(new Date() + ' Caught Request: ' + $request.origin);
 		if(checkOriginAllowed($request.origin) === false){
 			$request.reject();
 			console.log((new Date()) + ' Connection from origin ' + $request.origin + ' rejected.');
